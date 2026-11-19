@@ -11,7 +11,7 @@ export const ManifestJsonbSchema = z.array(ManifestRowSchema).min(1);
 export type ManifestRow = z.infer<typeof ManifestRowSchema>;
 export type ManifestJsonb = z.infer<typeof ManifestJsonbSchema>;
 
-export const SupplierName = z.string().trim().min(1, 'Supplier name cannot be blank');
+export const SupplierName = z.string().trim().min(1, 'Supplier name cannot be blank.');
 
 export const Supplier = z.object({
   name: SupplierName,
@@ -25,8 +25,8 @@ export const Acquisition = z.object({
   id: z.number(),
   supplier_name: SupplierName,
   purchase_date: SafeCoercedDateSchema,
-  purchase_price: z.number().nonnegative({ error: 'Purchase price cannot be negative' }),
-  freight_cost: z.number().nonnegative({ error: 'Freight cost cannot be negative' }),
+  purchase_price: z.number().nonnegative({ error: 'Purchase price cannot be negative.' }),
+  freight_cost: z.number().nonnegative({ error: 'Freight cost cannot be negative.' }),
   manifest: ManifestJsonbSchema.nullable(),
   notes: z.string().nullable(),
   created_at: z.coerce.date(),
@@ -61,7 +61,7 @@ export const Item = z.object({
   name: z.string().trim().min(1, 'Name cannot be empty or contain only whitespace'),
   sku: z.string().trim().min(1, 'Sku cannot be empty or contain only whitespace'),
   condition: ItemCondition,
-  allocated_cost: z.number().nonnegative({ error: 'Allocated cost must be greater than 0.' }),
+  allocated_cost: z.number().nonnegative({ error: 'Allocated cost cannot be negative.' }),
   status: ItemStatus.default('purchased'),
   created_at: z.coerce.date(),
   updated_at: z.coerce.date()

@@ -1,0 +1,937 @@
+{
+  "schemaVersion": "1",
+  "targetFamily": "sql",
+  "target": "postgres",
+  "profileHash": "3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2",
+  "roots": {
+    "acquisition": {
+      "model": "Acquisition",
+      "namespace": "public"
+    },
+    "item": {
+      "model": "Item",
+      "namespace": "public"
+    },
+    "supplier": {
+      "model": "Supplier",
+      "namespace": "public"
+    }
+  },
+  "domain": {
+    "namespaces": {
+      "public": {
+        "models": {
+          "Acquisition": {
+            "fields": {
+              "created_at": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 6
+                  }
+                }
+              },
+              "freight_cost": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/numeric@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 12,
+                    "scale": 2
+                  }
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int8number@1",
+                  "kind": "scalar"
+                }
+              },
+              "manifest": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/jsonb@1",
+                  "kind": "scalar"
+                }
+              },
+              "notes": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "purchase_date": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/date-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "purchase_price": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/numeric@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 12,
+                    "scale": 2
+                  }
+                }
+              },
+              "supplier_name": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updated_at": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 6
+                  }
+                }
+              }
+            },
+            "relations": {
+              "items": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "acquisition_id"
+                  ]
+                },
+                "to": {
+                  "model": "Item",
+                  "namespace": "public"
+                }
+              },
+              "supplier": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "supplier_name"
+                  ],
+                  "targetFields": [
+                    "name"
+                  ]
+                },
+                "to": {
+                  "model": "Supplier",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "created_at": {
+                  "column": "created_at"
+                },
+                "freight_cost": {
+                  "column": "freight_cost"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "manifest": {
+                  "column": "manifest"
+                },
+                "notes": {
+                  "column": "notes"
+                },
+                "purchase_date": {
+                  "column": "purchase_date"
+                },
+                "purchase_price": {
+                  "column": "purchase_price"
+                },
+                "supplier_name": {
+                  "column": "supplier_name"
+                },
+                "updated_at": {
+                  "column": "updated_at"
+                }
+              },
+              "namespaceId": "public",
+              "table": "acquisition"
+            }
+          },
+          "Item": {
+            "fields": {
+              "acquisition_id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int8number@1",
+                  "kind": "scalar"
+                }
+              },
+              "allocated_cost": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/numeric@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 12,
+                    "scale": 2
+                  }
+                }
+              },
+              "condition": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/enum@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "typeName": "item_condition"
+                  }
+                }
+              },
+              "created_at": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 6
+                  }
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int8number@1",
+                  "kind": "scalar"
+                }
+              },
+              "name": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "sku": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "status": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/enum@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "typeName": "item_status"
+                  }
+                }
+              },
+              "updated_at": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 6
+                  }
+                }
+              }
+            },
+            "relations": {
+              "acquisition": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "acquisition_id"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Acquisition",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "acquisition_id": {
+                  "column": "acquisition_id"
+                },
+                "allocated_cost": {
+                  "column": "allocated_cost"
+                },
+                "condition": {
+                  "column": "condition"
+                },
+                "created_at": {
+                  "column": "created_at"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "name": {
+                  "column": "name"
+                },
+                "sku": {
+                  "column": "sku"
+                },
+                "status": {
+                  "column": "status"
+                },
+                "updated_at": {
+                  "column": "updated_at"
+                }
+              },
+              "namespaceId": "public",
+              "table": "item"
+            }
+          },
+          "Supplier": {
+            "fields": {
+              "created_at": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 6
+                  }
+                }
+              },
+              "name": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updated_at": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 6
+                  }
+                }
+              }
+            },
+            "relations": {
+              "acquisitions": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "name"
+                  ],
+                  "targetFields": [
+                    "supplier_name"
+                  ]
+                },
+                "to": {
+                  "model": "Acquisition",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "created_at": {
+                  "column": "created_at"
+                },
+                "name": {
+                  "column": "name"
+                },
+                "updated_at": {
+                  "column": "updated_at"
+                }
+              },
+              "namespaceId": "public",
+              "table": "supplier"
+            }
+          }
+        }
+      }
+    }
+  },
+  "storage": {
+    "namespaces": {
+      "public": {
+        "entries": {
+          "native_enum": {
+            "item_condition": {
+              "kind": "postgres-enum",
+              "members": [
+                "new",
+                "like_new",
+                "refurbished",
+                "used_good",
+                "used_fair",
+                "salvage"
+              ],
+              "typeName": "item_condition"
+            },
+            "item_status": {
+              "kind": "postgres-enum",
+              "members": [
+                "purchased",
+                "inspecting",
+                "prep_required",
+                "ready_to_list",
+                "listed",
+                "sold",
+                "shipped",
+                "completed",
+                "returned",
+                "unlisted",
+                "scrapped"
+              ],
+              "typeName": "item_status"
+            }
+          },
+          "table": {
+            "acquisition": {
+              "checks": [
+                {
+                  "expression": "freight_cost >= 0",
+                  "name": "acquisition_freight_cost_check"
+                },
+                {
+                  "expression": "purchase_price >= 0",
+                  "name": "acquisition_purchase_price_check"
+                }
+              ],
+              "columns": {
+                "created_at": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 6
+                  }
+                },
+                "freight_cost": {
+                  "codecId": "pg/numeric@1",
+                  "dataType": "pg/numeric",
+                  "default": {
+                    "kind": "literal",
+                    "value": "0.00"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 12,
+                    "scale": 2
+                  }
+                },
+                "id": {
+                  "codecId": "pg/int8number@1",
+                  "dataType": "pg/int8",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nullable": false
+                },
+                "manifest": {
+                  "codecId": "pg/jsonb@1",
+                  "dataType": "pg/jsonb",
+                  "nullable": true
+                },
+                "notes": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "purchase_date": {
+                  "codecId": "pg/date-string@1",
+                  "dataType": "pg/date",
+                  "nullable": false
+                },
+                "purchase_price": {
+                  "codecId": "pg/numeric@1",
+                  "dataType": "pg/numeric",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 12,
+                    "scale": 2
+                  }
+                },
+                "supplier_name": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "updated_at": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 6
+                  }
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "acquisition_supplier_name_idx"
+                  },
+                  "onDelete": "restrict",
+                  "onUpdate": "cascade",
+                  "source": {
+                    "columns": [
+                      "supplier_name"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "acquisition"
+                  },
+                  "target": {
+                    "columns": [
+                      "name"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "supplier"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "supplier_name"
+                  ],
+                  "name": "acquisition_supplier_name_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
+            "item": {
+              "checks": [
+                {
+                  "expression": "allocated_cost >= 0",
+                  "name": "item_allocated_cost_check"
+                },
+                {
+                  "expression": "TRIM(name) <> ''",
+                  "name": "item_name_check"
+                },
+                {
+                  "expression": "TRIM(sku) <> ''",
+                  "name": "item_sku_check"
+                }
+              ],
+              "columns": {
+                "acquisition_id": {
+                  "codecId": "pg/int8number@1",
+                  "dataType": "pg/int8",
+                  "nullable": false
+                },
+                "allocated_cost": {
+                  "codecId": "pg/numeric@1",
+                  "dataType": "pg/numeric",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 12,
+                    "scale": 2
+                  }
+                },
+                "condition": {
+                  "codecId": "pg/enum@1",
+                  "dataType": "pg/enum",
+                  "nullable": false,
+                  "typeParams": {
+                    "typeName": "item_condition"
+                  },
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "ItemCondition",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "created_at": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 6
+                  }
+                },
+                "id": {
+                  "codecId": "pg/int8number@1",
+                  "dataType": "pg/int8",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nullable": false
+                },
+                "name": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "sku": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "status": {
+                  "codecId": "pg/enum@1",
+                  "dataType": "pg/enum",
+                  "default": {
+                    "kind": "literal",
+                    "value": "purchased"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "typeName": "item_status"
+                  },
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "ItemStatus",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "updated_at": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 6
+                  }
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "item_acquisition_id_idx_7bf4b5dc"
+                  },
+                  "onDelete": "restrict",
+                  "source": {
+                    "columns": [
+                      "acquisition_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "item"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "acquisition"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "acquisition_id"
+                  ],
+                  "name": "item_acquisition_id_idx_7bf4b5dc",
+                  "prefix": "item_acquisition_id_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "acquisition_id",
+                    "status"
+                  ],
+                  "name": "item_acquisition_id_status_idx",
+                  "unique": false
+                },
+                {
+                  "expression": "LOWER(sku)",
+                  "name": "item_sku_lower_idx",
+                  "unique": true
+                },
+                {
+                  "columns": [
+                    "status"
+                  ],
+                  "name": "item_status_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
+            "supplier": {
+              "checks": [
+                {
+                  "expression": "TRIM(name) <> ''",
+                  "name": "supplier_name_check"
+                }
+              ],
+              "columns": {
+                "created_at": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 6
+                  }
+                },
+                "name": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "updated_at": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 6
+                  }
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [
+                {
+                  "expression": "LOWER(name)",
+                  "name": "supplier_name_lower_idx",
+                  "unique": true
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "name"
+                ]
+              },
+              "uniques": []
+            }
+          },
+          "valueSet": {
+            "ItemCondition": {
+              "kind": "valueSet",
+              "values": [
+                "new",
+                "like_new",
+                "refurbished",
+                "used_good",
+                "used_fair",
+                "salvage"
+              ]
+            },
+            "ItemStatus": {
+              "kind": "valueSet",
+              "values": [
+                "purchased",
+                "inspecting",
+                "prep_required",
+                "ready_to_list",
+                "listed",
+                "sold",
+                "shipped",
+                "completed",
+                "returned",
+                "unlisted",
+                "scrapped"
+              ]
+            }
+          }
+        },
+        "id": "public",
+        "kind": "postgres-schema"
+      }
+    },
+    "storageHash": "aa1ef29c72d81f00bcdf32e59a33f1ccd442368770de1a103b5f987f735b9f27"
+  },
+  "execution": {
+    "executionHash": "bed3d4eb61fb4d2bc0d1c5b6731cac3a14209a845796a93fba5082e1945b4127",
+    "mutations": {
+      "defaults": [
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 6
+            }
+          },
+          "ref": {
+            "entry": "acquisition",
+            "field": "created_at",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 6
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 6
+            }
+          },
+          "ref": {
+            "entry": "acquisition",
+            "field": "updated_at",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 6
+            }
+          },
+          "ref": {
+            "entry": "item",
+            "field": "created_at",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 6
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 6
+            }
+          },
+          "ref": {
+            "entry": "item",
+            "field": "updated_at",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 6
+            }
+          },
+          "ref": {
+            "entry": "supplier",
+            "field": "created_at",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 6
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 6
+            }
+          },
+          "ref": {
+            "entry": "supplier",
+            "field": "updated_at",
+            "namespace": "public"
+          }
+        }
+      ]
+    }
+  },
+  "capabilities": {
+    "postgres": {
+      "distinctOn": true,
+      "forKeyShare": true,
+      "forNoKeyUpdate": true,
+      "jsonAgg": true,
+      "lateral": true,
+      "limit": true,
+      "orderBy": true,
+      "returning": true
+    },
+    "sql": {
+      "checkConstraint": true,
+      "defaultInInsert": true,
+      "enums": true,
+      "forShare": true,
+      "forUpdate": true,
+      "insertOnConflictSkip": true,
+      "insertOnConflictTarget": true,
+      "insertOnConflictWithoutTarget": true,
+      "lateral": true,
+      "lockNowait": true,
+      "lockOf": true,
+      "lockSkipLocked": true,
+      "returning": true,
+      "scalarList": true
+    }
+  },
+  "extensions": {},
+  "meta": {},
+  "_generated": {
+    "warning": "⚠️  GENERATED FILE - DO NOT EDIT",
+    "message": "This file is automatically generated by \"prisma contract emit\".",
+    "regenerate": "To regenerate, run: prisma contract emit"
+  }
+}
