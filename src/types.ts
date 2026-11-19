@@ -66,3 +66,27 @@ export const Item = z.object({
   created_at: z.coerce.date(),
   updated_at: z.coerce.date()
 });
+
+export type Item = z.infer<typeof Item>;
+
+export const CreateItemRequest = Item.omit({
+  id: true,
+  acquisition_id: true,
+  created_at: true,
+  updated_at: true
+});
+
+export type CreateItemRequest = z.infer<typeof CreateItemRequest>;
+
+export const CreateAcquisitionRequest = Acquisition.omit({
+  id: true,
+  created_at: true,
+  updated_at: true
+}).extend({
+  freight_cost: z.number().nonnegative({ error: 'Freight cost cannot be negative.' }).optional(),
+  manifest: ManifestJsonbSchema.nullable().optional(),
+  notes: z.string().nullable().optional(),
+  items: z.array(CreateItemRequest).min(1)
+});
+
+export type CreateAcquisitionRequest = z.infer<typeof CreateAcquisitionRequest>;

@@ -33,8 +33,8 @@ model Supplier {
   updated_at   DateTime(precision: 6)  @default(now()) @onCreate(now()) @onUpdate(now())
   acquisitions Acquisition[]
 
-  @@check(expression: sql`TRIM(name) <> ''`, map: "supplier_name_check")
-  @@index(expression: sql`LOWER(name)`, unique: true, map: "supplier_name_lower_idx")
+  @@check(expression: sql`TRIM(name) <> ''`, name: "supplier_name_not_blank")
+  @@index(expression: sql`LOWER(name)`, unique: true, name: "supplier_name_lower_idx")
   @@map("supplier")
 }
 
@@ -51,8 +51,8 @@ model Acquisition {
   updated_at     DateTime(precision: 6)  @default(now()) @onCreate(now()) @onUpdate(now())
   items          Item[]
 
-  @@check(expression: sql`purchase_price >= 0`, map: "acquisition_purchase_price_check")
-  @@check(expression: sql`freight_cost >= 0`, map: "acquisition_freight_cost_check")
+  @@check(expression: sql`purchase_price >= 0`, name: "acquisition_purchase_price_nonnegative")
+  @@check(expression: sql`freight_cost >= 0`, name: "acquisition_freight_cost_nonnegative")
   @@index([supplier_name], map: "acquisition_supplier_name_idx")
   @@map("acquisition")
 }
@@ -69,10 +69,10 @@ model Item {
   created_at     DateTime(precision: 6)  @default(now()) @onCreate(now())
   updated_at     DateTime(precision: 6)  @default(now()) @onCreate(now()) @onUpdate(now())
 
-  @@check(expression: sql`TRIM(name) <> ''`, map: "item_name_check")
-  @@check(expression: sql`TRIM(sku) <> ''`, map: "item_sku_check")
-  @@check(expression: sql`allocated_cost >= 0`, map: "item_allocated_cost_check")
-  @@index(expression: sql`LOWER(sku)`, unique: true, map: "item_sku_lower_idx")
+  @@check(expression: sql`TRIM(name) <> ''`, name: "item_name_not_blank")
+  @@check(expression: sql`TRIM(sku) <> ''`, name: "item_sku_not_blank")
+  @@check(expression: sql`allocated_cost >= 0`, name: "item_allocated_cost_nonnegative")
+  @@index(expression: sql`LOWER(sku)`, unique: true, name: "item_sku_lower_idx")
   @@index([acquisition_id, status], map: "item_acquisition_id_status_idx")
   @@index([status], map: "item_status_idx")
   @@map("item")

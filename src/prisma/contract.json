@@ -409,11 +409,13 @@
               "checks": [
                 {
                   "expression": "freight_cost >= 0",
-                  "name": "acquisition_freight_cost_check"
+                  "name": "acquisition_freight_cost_nonnegative_09be502f",
+                  "prefix": "acquisition_freight_cost_nonnegative"
                 },
                 {
                   "expression": "purchase_price >= 0",
-                  "name": "acquisition_purchase_price_check"
+                  "name": "acquisition_purchase_price_nonnegative_db45adb0",
+                  "prefix": "acquisition_purchase_price_nonnegative"
                 }
               ],
               "columns": {
@@ -536,15 +538,18 @@
               "checks": [
                 {
                   "expression": "allocated_cost >= 0",
-                  "name": "item_allocated_cost_check"
+                  "name": "item_allocated_cost_nonnegative_85643bdd",
+                  "prefix": "item_allocated_cost_nonnegative"
                 },
                 {
                   "expression": "TRIM(name) <> ''",
-                  "name": "item_name_check"
+                  "name": "item_name_not_blank_b3fec168",
+                  "prefix": "item_name_not_blank"
                 },
                 {
                   "expression": "TRIM(sku) <> ''",
-                  "name": "item_sku_check"
+                  "name": "item_sku_not_blank_6054bf7e",
+                  "prefix": "item_sku_not_blank"
                 }
               ],
               "columns": {
@@ -679,7 +684,8 @@
                 },
                 {
                   "expression": "LOWER(sku)",
-                  "name": "item_sku_lower_idx",
+                  "name": "item_sku_lower_idx_109410d2",
+                  "prefix": "item_sku_lower_idx",
                   "unique": true
                 },
                 {
@@ -701,7 +707,8 @@
               "checks": [
                 {
                   "expression": "TRIM(name) <> ''",
-                  "name": "supplier_name_check"
+                  "name": "supplier_name_not_blank_b3fec168",
+                  "prefix": "supplier_name_not_blank"
                 }
               ],
               "columns": {
@@ -739,7 +746,8 @@
               "indexes": [
                 {
                   "expression": "LOWER(name)",
-                  "name": "supplier_name_lower_idx",
+                  "name": "supplier_name_lower_idx_5e83f06d",
+                  "prefix": "supplier_name_lower_idx",
                   "unique": true
                 }
               ],
@@ -785,7 +793,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "aa1ef29c72d81f00bcdf32e59a33f1ccd442368770de1a103b5f987f735b9f27"
+    "storageHash": "767070f8b7ca45c649099c685900f6cac56b4ca2ddc357753f4420d2caabf71d"
   },
   "execution": {
     "executionHash": "bed3d4eb61fb4d2bc0d1c5b6731cac3a14209a845796a93fba5082e1945b4127",
