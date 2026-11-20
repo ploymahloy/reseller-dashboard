@@ -1,6 +1,20 @@
 import { db, type Tx } from '../prisma/db.js';
 import type { CreateSupplierRequest, Supplier } from './supplier.schema.js';
 
+export const listSupplierNames = async (): Promise<string[]> => {
+  const supplierTable = db.sql.public.supplier;
+  const supplierNamesQuery = db.raw.sql`
+    SELECT name FROM supplier
+  `
+    .returnsRow({
+      name: supplierTable.columns.name
+    })
+    .build();
+
+  const rows = await db.query(supplierNamesQuery);
+  return rows.map((row) => row.name);
+}
+
 const insertSupplier = async (tx: Tx, body: CreateSupplierRequest): Promise<Supplier> => {
   const supplier = tx.sql.public.supplier;
   const plan = tx.raw.sql`

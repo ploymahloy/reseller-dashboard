@@ -1,9 +1,19 @@
 import { SqlQueryError } from '@prisma/orm-family-sql/errors';
 import { Router, type Request, type Response } from 'express';
 import { CreateSupplierRequest } from './supplier.schema.js';
-import { createSupplier } from './supplier.service.js';
+import { createSupplier, listSupplierNames } from './supplier.service.js';
 
 export const supplierRouter = Router();
+
+supplierRouter.get('/', async (_req: Request, res: Response) => {
+  try {
+    const supplierNames = await listSupplierNames();
+    res.status(200).json(supplierNames);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to list supplier names.' });
+  }
+});
 
 supplierRouter.post('/', async (req: Request, res: Response) => {
   const parsed = CreateSupplierRequest.safeParse(req.body);
