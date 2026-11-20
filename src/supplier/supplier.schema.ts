@@ -9,3 +9,10 @@ export const Supplier = z.object({
 });
 
 export type Supplier = z.infer<typeof Supplier>;
+
+export const CreateSupplierRequest = Supplier.omit({
+  created_at: true,
+  updated_at: true
+});
+
+export type CreateSupplierRequest = z.infer<typeof CreateSupplierRequest>;
