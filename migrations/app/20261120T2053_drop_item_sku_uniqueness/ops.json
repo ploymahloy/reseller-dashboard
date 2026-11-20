@@ -1,0 +1,96 @@
+[
+  {
+    "id": "dropIndex.item.item_sku_lower_idx_109410d2",
+    "label": "Drop index \"item_sku_lower_idx_109410d2\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "item_sku_lower_idx_109410d2",
+        "table": "item"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"item_sku_lower_idx_109410d2\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"item_sku_lower_idx_109410d2\""
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "index \"item_sku_lower_idx_109410d2\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop index \"item_sku_lower_idx_109410d2\"",
+        "sql": "DROP INDEX \"public\".\"item_sku_lower_idx_109410d2\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"item_sku_lower_idx_109410d2\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"item_sku_lower_idx_109410d2\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"item_sku_lower_idx_109410d2\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "index.item.item_sku_lower_idx_950f3d87",
+    "label": "Create index \"item_sku_lower_idx_950f3d87\" on \"item\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "item_sku_lower_idx_950f3d87",
+        "table": "item"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"item_sku_lower_idx_950f3d87\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"item_sku_lower_idx_950f3d87\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"item_sku_lower_idx_950f3d87\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"item_sku_lower_idx_950f3d87\"",
+        "sql": "CREATE INDEX \"item_sku_lower_idx_950f3d87\" ON \"public\".\"item\" (LOWER(sku))",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"item_sku_lower_idx_950f3d87\" exists on \"item\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"item_sku_lower_idx_950f3d87\"",
+          "i",
+          "I",
+          "\"public\".\"item\"",
+          "btree"
+        ]
+      }
+    ]
+  }
+]

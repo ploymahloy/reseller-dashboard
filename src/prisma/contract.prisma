@@ -1,36 +1,35 @@
 // use prisma-8
-
 native_enum ItemCondition {
-  new         = "new"
-  like_new    = "like_new"
+  new = "new"
+  like_new = "like_new"
   refurbished = "refurbished"
-  used_good   = "used_good"
-  used_fair   = "used_fair"
-  salvage     = "salvage"
+  used_good = "used_good"
+  used_fair = "used_fair"
+  salvage = "salvage"
 
   @@map("item_condition")
 }
 
 native_enum ItemStatus {
-  purchased     = "purchased"
-  inspecting    = "inspecting"
+  purchased = "purchased"
+  inspecting = "inspecting"
   prep_required = "prep_required"
   ready_to_list = "ready_to_list"
-  listed        = "listed"
-  sold          = "sold"
-  shipped       = "shipped"
-  completed     = "completed"
-  returned      = "returned"
-  unlisted      = "unlisted"
-  scrapped      = "scrapped"
+  listed = "listed"
+  sold = "sold"
+  shipped = "shipped"
+  completed = "completed"
+  returned = "returned"
+  unlisted = "unlisted"
+  scrapped = "scrapped"
 
   @@map("item_status")
 }
 
 model Supplier {
-  name         String                  @id
-  created_at   DateTime(precision: 6)  @default(now()) @onCreate(now())
-  updated_at   DateTime(precision: 6)  @default(now()) @onCreate(now()) @onUpdate(now())
+  name         String                 @id
+  created_at   DateTime(precision: 6) @default(now()) @onCreate(now())
+  updated_at   DateTime(precision: 6) @default(now()) @onCreate(now()) @onUpdate(now())
   acquisitions Acquisition[]
 
   @@check(expression: sql`TRIM(name) <> ''`, name: "supplier_name_not_blank")
@@ -39,16 +38,16 @@ model Supplier {
 }
 
 model Acquisition {
-  id             BigInt(as: number)      @id @default(autoincrement())
+  id             BigInt(as: number)               @id @default(autoincrement())
   supplier_name  String
-  supplier       Supplier                @relation(fields: [supplier_name], references: [name], onDelete: Restrict, onUpdate: Cascade)
+  supplier       Supplier                         @relation(fields: [supplier_name], references: [name], onDelete: Restrict, onUpdate: Cascade)
   purchase_date  Date
   purchase_price Decimal(precision: 12, scale: 2)
   freight_cost   Decimal(precision: 12, scale: 2) @default(0)
   manifest       Jsonb?
   notes          String?
-  created_at     DateTime(precision: 6)  @default(now()) @onCreate(now())
-  updated_at     DateTime(precision: 6)  @default(now()) @onCreate(now()) @onUpdate(now())
+  created_at     DateTime(precision: 6)           @default(now()) @onCreate(now())
+  updated_at     DateTime(precision: 6)           @default(now()) @onCreate(now()) @onUpdate(now())
   items          Item[]
 
   @@check(expression: sql`purchase_price >= 0`, name: "acquisition_purchase_price_nonnegative")
@@ -58,21 +57,21 @@ model Acquisition {
 }
 
 model Item {
-  id             BigInt(as: number)      @id @default(autoincrement())
+  id             BigInt(as: number)               @id @default(autoincrement())
   acquisition_id BigInt(as: number)
-  acquisition    Acquisition             @relation(fields: [acquisition_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  acquisition    Acquisition                      @relation(fields: [acquisition_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
   name           String
   sku            String
   condition      pg.enum(ItemCondition)
   allocated_cost Decimal(precision: 12, scale: 2)
-  status         pg.enum(ItemStatus)     @default("purchased")
-  created_at     DateTime(precision: 6)  @default(now()) @onCreate(now())
-  updated_at     DateTime(precision: 6)  @default(now()) @onCreate(now()) @onUpdate(now())
+  status         pg.enum(ItemStatus)              @default("purchased")
+  created_at     DateTime(precision: 6)           @default(now()) @onCreate(now())
+  updated_at     DateTime(precision: 6)           @default(now()) @onCreate(now()) @onUpdate(now())
 
   @@check(expression: sql`TRIM(name) <> ''`, name: "item_name_not_blank")
   @@check(expression: sql`TRIM(sku) <> ''`, name: "item_sku_not_blank")
   @@check(expression: sql`allocated_cost >= 0`, name: "item_allocated_cost_nonnegative")
-  @@index(expression: sql`LOWER(sku)`, unique: true, name: "item_sku_lower_idx")
+  @@index(expression: sql`LOWER(sku)`, name: "item_sku_lower_idx")
   @@index([acquisition_id, status], map: "item_acquisition_id_status_idx")
   @@index([status], map: "item_status_idx")
   @@map("item")

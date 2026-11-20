@@ -684,9 +684,9 @@
                 },
                 {
                   "expression": "LOWER(sku)",
-                  "name": "item_sku_lower_idx_109410d2",
+                  "name": "item_sku_lower_idx_950f3d87",
                   "prefix": "item_sku_lower_idx",
-                  "unique": true
+                  "unique": false
                 },
                 {
                   "columns": [
@@ -793,7 +793,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "767070f8b7ca45c649099c685900f6cac56b4ca2ddc357753f4420d2caabf71d"
+    "storageHash": "7fa4f83dd52e128dd593479c586a81b6d5c3d417457a186590b65f0665220424"
   },
   "execution": {
     "executionHash": "bed3d4eb61fb4d2bc0d1c5b6731cac3a14209a845796a93fba5082e1945b4127",
