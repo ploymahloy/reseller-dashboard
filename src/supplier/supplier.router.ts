@@ -41,5 +41,9 @@ supplierRouter.post('/', async (req: Request, res: Response) => {
       res.status(400).json({ error: 'A value violates a database constraint.' });
       return;
     }
+
+    console.error(error);
+    res.status(500).json({ error: 'Failed to create supplier.' });
+    return;
   }
 });
