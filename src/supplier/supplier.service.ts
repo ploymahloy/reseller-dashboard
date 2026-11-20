@@ -1,7 +1,5 @@
-import { db } from '../prisma/db.js';
+import { db, type Tx } from '../prisma/db.js';
 import type { CreateSupplierRequest, Supplier } from './supplier.schema.js';
-
-type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
 const insertSupplier = async (tx: Tx, body: CreateSupplierRequest): Promise<Supplier> => {
   const supplier = tx.sql.public.supplier;

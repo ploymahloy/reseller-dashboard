@@ -1,9 +1,7 @@
 import { param } from '@prisma/orm-postgres/relational-core/expression';
 import type { CreateItemRequest } from '../item/item.schema.js';
-import { db } from '../prisma/db.js';
+import { db, type Tx } from '../prisma/db.js';
 import type { CreateAcquisitionRequest } from './acquisition.schema.js';
-
-type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
 const money = (value: number) => param(value.toFixed(2), { codecId: 'pg/numeric@1' });
 const purchaseDate = (value: Date) => param(value.toISOString().slice(0, 10), { codecId: 'pg/date-string@1' });
