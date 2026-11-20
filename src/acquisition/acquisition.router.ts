@@ -1,5 +1,6 @@
 import { SqlQueryError } from '@prisma/orm-family-sql/errors';
 import { Router, type Request, type Response } from 'express';
+
 import { isSupplierNotFoundError } from '../supplier/supplier.service.js';
 import { CreateAcquisitionRequest } from './acquisition.schema.js';
 import { createAcquisition } from './acquisition.service.js';
