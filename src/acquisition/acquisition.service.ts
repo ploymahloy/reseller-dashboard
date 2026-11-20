@@ -1,40 +1,12 @@
 import { param } from '@prisma/orm-postgres/relational-core/expression';
 import type { CreateItemRequest } from '../item/item.schema.js';
 import { db, type Tx } from '../prisma/db.js';
+import { getSupplierName } from '../supplier/supplier.service.js';
 import type { CreateAcquisitionRequest } from './acquisition.schema.js';
 
 const money = (value: number) => param(value.toFixed(2), { codecId: 'pg/numeric@1' });
 const purchaseDate = (value: Date) => param(value.toISOString().slice(0, 10), { codecId: 'pg/date-string@1' });
 const asMoney = (value: string): number => Number(value);
-
-const ensureSupplier = async (tx: Tx, requestedName: string): Promise<string> => {
-  const supplier = tx.sql.public.supplier;
-  const lookup = tx.raw.sql`
-    SELECT name FROM supplier WHERE LOWER(name) = LOWER(${requestedName})
-  `
-    .returnsRow({ name: supplier.columns.name })
-    .build();
-
-  const [found] = await tx.query(lookup);
-  if (found) return found.name;
-
-  const inserted = tx.raw.sql`
-    INSERT INTO supplier (name)
-    VALUES (${requestedName})
-    ON CONFLICT DO NOTHING
-    RETURNING name
-  `
-    .returnsRow({ name: supplier.columns.name })
-    .build();
-
-  const [created] = await tx.query(inserted);
-  if (created) return created.name;
-
-  const [raced] = await tx.query(lookup);
-  if (raced) return raced.name;
-
-  throw new Error('Failed to resolve supplier name.');
-};
 
 const insertAcquisition = async (tx: Tx, body: CreateAcquisitionRequest, supplierName: string) => {
   const acquisition = tx.sql.public.acquisition;
@@ -111,7 +83,7 @@ const insertItem = async (tx: Tx, acquisitionId: number, item: CreateItemRequest
 
 export const createAcquisition = async (body: CreateAcquisitionRequest) => {
   return db.transaction(async (tx) => {
-    const supplierName = await ensureSupplier(tx, body.supplier_name);
+    const supplierName = await getSupplierName(tx, body.supplier_name);
     const acquisition = await insertAcquisition(tx, body, supplierName);
     const items = [];
     for (const item of body.items) {

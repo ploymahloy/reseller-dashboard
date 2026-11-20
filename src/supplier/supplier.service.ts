@@ -1,6 +1,11 @@
 import { db, type Tx } from '../prisma/db.js';
 import type { CreateSupplierRequest, Supplier } from './supplier.schema.js';
 
+const supplierNotFoundMessage = 'Supplier does not exist.';
+
+export const isSupplierNotFoundError = (error: unknown): error is Error =>
+  error instanceof Error && error.message === supplierNotFoundMessage;
+
 export const listSupplierNames = async (): Promise<string[]> => {
   const supplierTable = db.sql.public.supplier;
   const supplierNamesQuery = db.raw.sql`
@@ -14,6 +19,20 @@ export const listSupplierNames = async (): Promise<string[]> => {
   const rows = await db.query(supplierNamesQuery);
   return rows.map((row) => row.name);
 }
+
+export const getSupplierName = async (tx: Tx, requestedName: string): Promise<string> => {
+  const supplier = tx.sql.public.supplier;
+  const lookup = tx.raw.sql`
+    SELECT name FROM supplier WHERE LOWER(name) = LOWER(${requestedName})
+  `
+    .returnsRow({ name: supplier.columns.name })
+    .build();
+
+  const [found] = await tx.query(lookup);
+  if (found) return found.name;
+
+  throw new Error(supplierNotFoundMessage);
+};
 
 const insertSupplier = async (tx: Tx, body: CreateSupplierRequest): Promise<Supplier> => {
   const supplier = tx.sql.public.supplier;
