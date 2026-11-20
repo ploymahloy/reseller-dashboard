@@ -1,0 +1,138 @@
+[
+  {
+    "id": "function.set_updated_at",
+    "label": "Create function set_updated_at()",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "create function set_updated_at",
+        "sql": "CREATE FUNCTION set_updated_at()\nRETURNS TRIGGER AS $$\nBEGIN\n  NEW.updated_at = NOW();\n  RETURN NEW;\nEND;\n$$ LANGUAGE plpgsql"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "function set_updated_at exists",
+        "sql": "SELECT EXISTS (\n  SELECT 1 FROM pg_proc p\n  JOIN pg_namespace n ON n.oid = p.pronamespace\n  WHERE n.nspname = 'public' AND p.proname = 'set_updated_at'\n)",
+        "expectation": {
+          "expects": "present",
+          "object": "function set_updated_at()"
+        }
+      }
+    ]
+  },
+  {
+    "id": "trigger.supplier_set_updated_at",
+    "label": "Create trigger supplier_set_updated_at",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "create trigger supplier_set_updated_at",
+        "sql": "CREATE TRIGGER supplier_set_updated_at\n  BEFORE UPDATE ON supplier\n  FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "trigger supplier_set_updated_at exists",
+        "sql": "SELECT EXISTS (\n    SELECT 1 FROM pg_trigger t\n    JOIN pg_class c ON c.oid = t.tgrelid\n    JOIN pg_namespace n ON n.oid = c.relnamespace\n    WHERE n.nspname = 'public'\n      AND c.relname = 'supplier'\n      AND t.tgname = 'supplier_set_updated_at'\n      AND NOT t.tgisinternal\n  )",
+        "expectation": {
+          "expects": "present",
+          "object": "trigger supplier_set_updated_at on supplier"
+        }
+      }
+    ]
+  },
+  {
+    "id": "trigger.acquisition_set_updated_at",
+    "label": "Create trigger acquisition_set_updated_at",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "create trigger acquisition_set_updated_at",
+        "sql": "CREATE TRIGGER acquisition_set_updated_at\n  BEFORE UPDATE ON acquisition\n  FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "trigger acquisition_set_updated_at exists",
+        "sql": "SELECT EXISTS (\n    SELECT 1 FROM pg_trigger t\n    JOIN pg_class c ON c.oid = t.tgrelid\n    JOIN pg_namespace n ON n.oid = c.relnamespace\n    WHERE n.nspname = 'public'\n      AND c.relname = 'acquisition'\n      AND t.tgname = 'acquisition_set_updated_at'\n      AND NOT t.tgisinternal\n  )",
+        "expectation": {
+          "expects": "present",
+          "object": "trigger acquisition_set_updated_at on acquisition"
+        }
+      }
+    ]
+  },
+  {
+    "id": "trigger.item_set_updated_at",
+    "label": "Create trigger item_set_updated_at",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "create trigger item_set_updated_at",
+        "sql": "CREATE TRIGGER item_set_updated_at\n  BEFORE UPDATE ON item\n  FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "trigger item_set_updated_at exists",
+        "sql": "SELECT EXISTS (\n    SELECT 1 FROM pg_trigger t\n    JOIN pg_class c ON c.oid = t.tgrelid\n    JOIN pg_namespace n ON n.oid = c.relnamespace\n    WHERE n.nspname = 'public'\n      AND c.relname = 'item'\n      AND t.tgname = 'item_set_updated_at'\n      AND NOT t.tgisinternal\n  )",
+        "expectation": {
+          "expects": "present",
+          "object": "trigger item_set_updated_at on item"
+        }
+      }
+    ]
+  },
+  {
+    "id": "data_migration.set_updated_at_triggers",
+    "label": "Data transform: set_updated_at_triggers",
+    "operationClass": "data",
+    "invariantId": "set_updated_at_triggers",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [
+      {
+        "description": "Check set_updated_at_triggers has work to do",
+        "sql": "SELECT EXISTS (SELECT \"name\" AS \"name\" FROM \"public\".\"supplier\" WHERE \"name\" = $1) AS ok",
+        "params": [
+          ""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "Run set_updated_at_triggers",
+        "sql": "DELETE FROM \"public\".\"supplier\" WHERE \"name\" = $1",
+        "params": [
+          ""
+        ]
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "Verify set_updated_at_triggers resolved all violations",
+        "sql": "SELECT NOT EXISTS (SELECT \"name\" AS \"name\" FROM \"public\".\"supplier\" WHERE \"name\" = $1) AS ok",
+        "params": [
+          ""
+        ]
+      }
+    ]
+  }
+]

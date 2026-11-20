@@ -1,4 +1,4 @@
 {
   "hash": "7fa4f83dd52e128dd593479c586a81b6d5c3d417457a186590b65f0665220424",
-  "invariants": []
+  "invariants": ["set_updated_at_triggers"]
 }

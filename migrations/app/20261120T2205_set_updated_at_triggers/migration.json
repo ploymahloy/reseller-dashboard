@@ -1,0 +1,9 @@
+{
+  "from": "7fa4f83dd52e128dd593479c586a81b6d5c3d417457a186590b65f0665220424",
+  "to": "7fa4f83dd52e128dd593479c586a81b6d5c3d417457a186590b65f0665220424",
+  "providedInvariants": [
+    "set_updated_at_triggers"
+  ],
+  "createdAt": "2026-11-20T22:05:37.961Z",
+  "migrationHash": "9c8a839165b4ca51f504a719470b16238d96e520b9ca0058a923e2a9f187cefe"
+}
