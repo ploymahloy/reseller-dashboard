@@ -18,11 +18,11 @@ acquisitionRouter.post('/', async (req: Request, res: Response) => {
   } catch (error) {
     if (SqlQueryError.is(error)) {
       if (error.sqlState === '23505') {
-        res.status(409).json({ error: 'A unique value already exists.' });
+        res.status(409).json({ error: 'Acquisition already exists.' });
         return;
       }
       if (error.sqlState === '23514') {
-        res.status(400).json({ error: 'A value violates a database constraint.' });
+        res.status(400).json({ error: 'Acquisition violates a database constraint.' });
         return;
       }
     }

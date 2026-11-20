@@ -33,17 +33,16 @@ supplierRouter.post('/', async (req: Request, res: Response) => {
     }
 
     if (error.sqlState === '23505') {
-      res.status(409).json({ error: 'A unique value already exists.' });
+      res.status(409).json({ error: 'Supplier name already exists.' });
       return;
     }
 
     if (error.sqlState === '23514') {
-      res.status(400).json({ error: 'A value violates a database constraint.' });
+      res.status(400).json({ error: 'Supplier name violates a database constraint.' });
       return;
     }
 
     console.error(error);
     res.status(500).json({ error: 'Failed to create supplier.' });
-    return;
   }
 });
