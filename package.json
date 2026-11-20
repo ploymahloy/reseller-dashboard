@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "tsc --noEmit",
     "start": "node dist/index.js",
     "contract:emit": "prisma contract emit",
     "db:init": "prisma db init"
