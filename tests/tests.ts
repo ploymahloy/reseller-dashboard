@@ -1,6 +1,7 @@
 import { SqlQueryError } from '@prisma/orm-family-sql/errors';
 
 import { createAcquisition } from '../src/acquisition/acquisition.service.js';
+import { ItemListQuerySchema } from '../src/item/item.schema.js';
 import { listItems } from '../src/item/item.service.js';
 import { db, type Tx } from '../src/prisma/db.js';
 import {
@@ -251,6 +252,65 @@ try {
       'listItems defaults to the first page',
       defaultedPage.page === 1 && defaultedPage.items.length === 1 && defaultedPage.items[0]?.id === firstId,
       defaultedPage
+    );
+
+    const parsedSort = ItemListQuerySchema.safeParse({
+      acquisition_id: String(acquisition.id),
+      sort: 'allocated_cost',
+      order: 'desc',
+      page: '1',
+      page_size: '1'
+    });
+    check(
+      'ItemListQuerySchema accepts allocated_cost and created_at sort params',
+      parsedSort.success &&
+      parsedSort.data.sort === 'allocated_cost' &&
+      parsedSort.data.order === 'desc' &&
+      ItemListQuerySchema.safeParse({ sort: 'created_at', order: 'asc' }).success &&
+      !ItemListQuerySchema.safeParse({ sort: 'name' }).success &&
+      !ItemListQuerySchema.safeParse({ order: 'sideways' }).success
+    );
+
+    const byCostAsc = (await listItems({ acquisition_id: acquisition.id, sort: 'allocated_cost', order: 'asc' })).items;
+    check(
+      'listItems sorts allocated_cost ascending',
+      byCostAsc.length === 2 && byCostAsc[0]?.sku === skuB && byCostAsc[1]?.sku === skuA,
+      byCostAsc.map((item) => ({ sku: item.sku, allocated_cost: item.allocated_cost }))
+    );
+    const byCostDesc = (await listItems({ acquisition_id: acquisition.id, sort: 'allocated_cost', order: 'desc' })).items;
+    check(
+      'listItems sorts allocated_cost descending',
+      byCostDesc.length === 2 && byCostDesc[0]?.sku === skuA && byCostDesc[1]?.sku === skuB,
+      byCostDesc.map((item) => ({ sku: item.sku, allocated_cost: item.allocated_cost }))
+    );
+    const costPage = await listItems({
+      acquisition_id: acquisition.id,
+      sort: 'allocated_cost',
+      order: 'desc',
+      page: 1,
+      page_size: 1
+    });
+    check(
+      'listItems pages after the allocated_cost sort',
+      costPage.total_items === 2 && costPage.items.length === 1 && costPage.items[0]?.sku === skuA,
+      costPage
+    );
+
+    const earlier = new Date('2020-01-01T00:00:00.000Z');
+    const moved = await tx.orm.public.Item.where((item) => item.id.eq(listedA.id)).update({ created_at: earlier });
+    check('probe item created_at can be moved', moved?.id === listedA.id && moved.created_at.getTime() === earlier.getTime());
+
+    const byCreatedAsc = (await listItems({ acquisition_id: acquisition.id, sort: 'created_at' })).items;
+    check(
+      'listItems sorts created_at ascending, defaulting a missing order to asc',
+      byCreatedAsc.length === 2 && byCreatedAsc[0]?.id === listedA.id && byCreatedAsc[1]?.id === listedB.id,
+      byCreatedAsc.map((item) => ({ id: item.id, created_at: item.created_at }))
+    );
+    const byCreatedDesc = (await listItems({ acquisition_id: acquisition.id, sort: 'created_at', order: 'desc' })).items;
+    check(
+      'listItems sorts created_at descending',
+      byCreatedDesc.length === 2 && byCreatedDesc[0]?.id === listedB.id && byCreatedDesc[1]?.id === listedA.id,
+      byCreatedDesc.map((item) => ({ id: item.id, created_at: item.created_at }))
     );
 
     await tx.execute(tx.raw.sql`SAVEPOINT supplier_duplicate`.affectedCount().build());

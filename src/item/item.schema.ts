@@ -57,9 +57,17 @@ export const ItemFilterSchema = z.object({
 
 export type ItemFilter = z.infer<typeof ItemFilterSchema>;
 
+export const ItemSortField = z.enum(['allocated_cost', 'created_at']);
+export type ItemSortField = z.infer<typeof ItemSortField>;
+
+export const ItemSortOrder = z.enum(['asc', 'desc']);
+export type ItemSortOrder = z.infer<typeof ItemSortOrder>;
+
 export const ItemListQuerySchema = ItemFilterSchema.extend({
   page: z.coerce.number().int().positive().optional(),
-  page_size: z.coerce.number().int().positive().max(100).optional()
+  page_size: z.coerce.number().int().positive().max(100).optional(),
+  sort: ItemSortField.optional(),
+  order: ItemSortOrder.optional()
 });
 
 export type ItemListQuery = z.infer<typeof ItemListQuerySchema>;
