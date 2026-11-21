@@ -20,7 +20,7 @@ export const ItemStatus = z.enum([
 
 export type ItemStatus = z.infer<typeof ItemStatus>;
 
-export const Item = z.object({
+export const ItemSchema = z.object({
   id: z.number(),
   acquisition_id: z.number(),
   name: z.string().trim().min(1, 'Name cannot be empty or contain only whitespace'),
@@ -32,9 +32,9 @@ export const Item = z.object({
   updated_at: z.coerce.date()
 });
 
-export type Item = z.infer<typeof Item>;
+export type Item = z.infer<typeof ItemSchema>;
 
-export const CreateItemRequest = Item.omit({
+export const CreateItemRequest = ItemSchema.omit({
   id: true,
   acquisition_id: true,
   created_at: true,
@@ -42,3 +42,17 @@ export const CreateItemRequest = Item.omit({
 });
 
 export type CreateItemRequest = z.infer<typeof CreateItemRequest>;
+
+export const ItemFilterSchema = z.object({
+  id: z.coerce.number().optional(),
+  acquisition_id: z.coerce.number().optional(),
+  name: z.string().trim().min(1).optional(),
+  sku: z.string().trim().min(1).optional(),
+  condition: ItemCondition.optional(),
+  allocated_cost: z.coerce.number().nonnegative().optional(),
+  status: ItemStatus.optional(),
+  created_at: ItemSchema.shape.created_at.optional(),
+  updated_at: ItemSchema.shape.updated_at.optional()
+})
+
+export type ItemFilter = z.infer<typeof ItemFilterSchema>;
