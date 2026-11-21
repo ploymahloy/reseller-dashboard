@@ -50,6 +50,12 @@ const wild = `100%_off_${stamp}`;
 const decoy = `100ZZZ_off_${stamp}`;
 const skuA = `sku-a-${stamp}`;
 const skuB = `sku-b-${stamp}`;
+const skuFragment = `a-${stamp}`;
+
+const sameUtcDay = (left: Date, right: Date) =>
+  left.getUTCFullYear() === right.getUTCFullYear() &&
+  left.getUTCMonth() === right.getUTCMonth() &&
+  left.getUTCDate() === right.getUTCDate();
 
 const beforeNames = await listSupplierNames();
 const beforeItems = await listItems();
@@ -132,6 +138,83 @@ try {
       listedA.acquisition_id === acquisition.id &&
       listedB?.status === 'listed' &&
       listedB.allocated_cost === 0
+    );
+    if (!listedA || !listedB) throw new Error('probe items missing');
+
+    const byId = await listItems({ id: listedA.id });
+    check('listItems filters by id', byId.length === 1 && byId[0]?.sku === skuA, byId.map((item) => item.id));
+
+    const byAcquisition = await listItems({ acquisition_id: acquisition.id });
+    check(
+      'listItems filters by acquisition_id',
+      byAcquisition.length === 2 &&
+        byAcquisition.every((item) => item.acquisition_id === acquisition.id) &&
+        byAcquisition.some((item) => item.sku === skuA) &&
+        byAcquisition.some((item) => item.sku === skuB),
+      byAcquisition.map((item) => item.sku)
+    );
+
+    const byName = await listItems({ name: 'Widget' });
+    check(
+      'listItems filters by name',
+      byName.some((item) => item.sku === skuA) &&
+        !byName.some((item) => item.sku === skuB) &&
+        byName.every((item) => item.name === 'Widget'),
+      byName.map((item) => item.sku)
+    );
+
+    const bySku = await listItems({ sku: skuFragment });
+    check(
+      'listItems filters by sku',
+      bySku.some((item) => item.sku === skuA) &&
+        !bySku.some((item) => item.sku === skuB) &&
+        bySku.every((item) => item.sku.includes(skuFragment)),
+      bySku.map((item) => item.sku)
+    );
+
+    const byCondition = await listItems({ condition: 'used_good' });
+    check(
+      'listItems filters by condition',
+      byCondition.some((item) => item.sku === skuA) &&
+        !byCondition.some((item) => item.sku === skuB) &&
+        byCondition.every((item) => item.condition === 'used_good'),
+      byCondition.map((item) => item.sku)
+    );
+
+    const byCost = await listItems({ allocated_cost: 12.5 });
+    check(
+      'listItems filters by allocated_cost',
+      byCost.some((item) => item.sku === skuA) &&
+        !byCost.some((item) => item.sku === skuB) &&
+        byCost.every((item) => item.allocated_cost >= 12.5),
+      byCost.map((item) => item.allocated_cost)
+    );
+
+    const byStatus = await listItems({ status: 'purchased' });
+    check(
+      'listItems filters by status',
+      byStatus.some((item) => item.sku === skuA) &&
+        !byStatus.some((item) => item.sku === skuB) &&
+        byStatus.every((item) => item.status === 'purchased'),
+      byStatus.map((item) => item.sku)
+    );
+
+    const byCreated = await listItems({ created_at: listedA.created_at });
+    check(
+      'listItems filters by created_at',
+      byCreated.some((item) => item.sku === skuA) &&
+        byCreated.some((item) => item.sku === skuB) &&
+        byCreated.every((item) => sameUtcDay(item.created_at, listedA.created_at)),
+      byCreated.map((item) => item.created_at)
+    );
+
+    const byUpdated = await listItems({ updated_at: listedA.updated_at });
+    check(
+      'listItems filters by updated_at',
+      byUpdated.some((item) => item.sku === skuA) &&
+        byUpdated.some((item) => item.sku === skuB) &&
+        byUpdated.every((item) => sameUtcDay(item.updated_at, listedA.updated_at)),
+      byUpdated.map((item) => item.updated_at)
     );
 
     await tx.execute(tx.raw.sql`SAVEPOINT supplier_duplicate`.affectedCount().build());
