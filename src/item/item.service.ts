@@ -1,6 +1,13 @@
 import { db } from '../prisma/db.js';
 
-import { type Item, ItemSchema, type ItemListQuery, type ItemPage } from './item.schema.js';
+import {
+  type Item,
+  ItemQuantitySchema,
+  type ItemQuantity,
+  ItemSchema,
+  type ItemListQuery,
+  type ItemPage
+} from './item.schema.js';
 import { asMoney } from '../shared/utils.js';
 
 const DEFAULT_PAGE_SIZE = 50;
@@ -98,4 +105,22 @@ export const getItems = async (filter: ItemListQuery = {}): Promise<ItemPage> =>
     page_size: pageSize,
     total_items: counted.total_items
   };
+};
+
+export const getItemQuantities = async (): Promise<ItemQuantity[]> => {
+  const rows = await db.orm.public.Item
+    .groupBy('sku')
+    .orderBy((item) => item.sku.asc())
+    .aggregate((agg) => ({
+      name: agg.min('name'), // Return the first name found for each sku
+      quantity: agg.count()
+    }));
+
+  return rows.map((row) =>
+    ItemQuantitySchema.parse({
+      name: row.name,
+      sku: row.sku,
+      quantity: row.quantity
+    })
+  );
 };

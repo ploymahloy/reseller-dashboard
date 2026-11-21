@@ -2,7 +2,7 @@ import { SqlQueryError } from '@prisma/orm-family-sql/errors';
 
 import { createAcquisition } from '../src/acquisition/acquisition.service.js';
 import { ItemListQuerySchema } from '../src/item/item.schema.js';
-import { getItems } from '../src/item/item.service.js';
+import { getItemQuantities, getItems } from '../src/item/item.service.js';
 import { db, type Tx } from '../src/prisma/db.js';
 import {
   createSupplier,
@@ -311,6 +311,27 @@ try {
       'getItems sorts created_at descending',
       byCreatedDesc.length === 2 && byCreatedDesc[0]?.id === listedB.id && byCreatedDesc[1]?.id === listedA.id,
       byCreatedDesc.map((item) => ({ id: item.id, created_at: item.created_at }))
+    );
+
+    await tx.orm.public.Item.create({
+      acquisition_id: acquisition.id,
+      name: 'Widget',
+      sku: skuA,
+      condition: 'used_good',
+      allocated_cost: '1.00',
+      status: 'purchased'
+    });
+    const quantities = (await getItemQuantities()).filter((row) => row.sku === skuA || row.sku === skuB);
+    check(
+      'getItemQuantities returns a name, sku, and quantity for each sku',
+      quantities.length === 2 &&
+      quantities[0]?.name === 'Widget' &&
+      quantities[0].sku === skuA &&
+      quantities[0].quantity === 2 &&
+      quantities[1]?.name === 'Gadget' &&
+      quantities[1].sku === skuB &&
+      quantities[1].quantity === 1,
+      quantities
     );
 
     await tx.execute(tx.raw.sql`SAVEPOINT supplier_duplicate`.affectedCount().build());

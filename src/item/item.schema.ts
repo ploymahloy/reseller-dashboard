@@ -78,3 +78,11 @@ export type ItemPage = {
   page_size: number;
   total_items: number;
 };
+
+export const ItemQuantitySchema = z.object({
+  name: z.string(),
+  sku: z.string(),
+  quantity: z.number().int().nonnegative()
+});
+
+export type ItemQuantity = z.infer<typeof ItemQuantitySchema>;
