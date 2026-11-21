@@ -79,6 +79,14 @@ export type ItemPage = {
   total_items: number;
 };
 
+export const ItemQuantitySortField = z.enum(['name', 'sku', 'quantity']);
+export type ItemQuantitySortField = z.infer<typeof ItemQuantitySortField>;
+
+export const ItemQuantityQuerySchema = z.object({
+  sortOnColumn: ItemQuantitySortField.optional(),
+  order: ItemSortOrder.optional()
+});
+
 export const ItemQuantitySchema = z.object({
   name: z.string(),
   sku: z.string(),

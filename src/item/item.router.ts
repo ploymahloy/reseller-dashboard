@@ -1,6 +1,6 @@
 import { Router, type Request, type Response } from 'express';
 import { getItems, getItemQuantities } from './item.service.js';
-import { ItemListQuerySchema } from './item.schema.js';
+import { ItemListQuerySchema, ItemQuantityQuerySchema } from './item.schema.js';
 
 export const itemRouter = Router();
 
@@ -15,9 +15,10 @@ itemRouter.get('/', async (req: Request, res: Response) => {
   }
 });
 
-itemRouter.get('/quantities', async (_: Request, res: Response) => {
+itemRouter.get('/quantities', async (req: Request, res: Response) => {
   try {
-    const quantities = await getItemQuantities();
+    const query = ItemQuantityQuerySchema.parse(req.query);
+    const quantities = await getItemQuantities(query.sortOnColumn, query.order);
     res.status(200).json(quantities);
   } catch (error) {
     console.error(error);

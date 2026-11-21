@@ -6,7 +6,9 @@ import {
   type ItemQuantity,
   ItemSchema,
   type ItemListQuery,
-  type ItemPage
+  type ItemPage,
+  type ItemSortOrder,
+  type ItemQuantitySortField
 } from './item.schema.js';
 import { asMoney } from '../shared/utils.js';
 
@@ -21,19 +23,26 @@ const asItems = (rows: ReadonlyArray<{ allocated_cost: string }>): Item[] =>
     })
   );
 
-const direction = <Result>(column: { asc(): Result; desc(): Result }, descending: boolean): Result =>
-  descending ? column.desc() : column.asc();
+const compareInOrder = <Value>(
+  left: Value,
+  right: Value,
+  order: ItemSortOrder,
+  by: (left: Value, right: Value) => number
+) => (order === 'desc' ? by(right, left) : by(left, right));
 
-const sortItems = (query: typeof db.orm.public.Item, sort: ItemListQuery['sort'], descending: boolean) => {
+const direction = <Result>(column: { asc(): Result; desc(): Result }, order: ItemSortOrder): Result =>
+  order === 'desc' ? column.desc() : column.asc();
+
+const sortItems = (query: typeof db.orm.public.Item, sort: ItemListQuery['sort'], order: ItemSortOrder): typeof db.orm.public.Item | null => {
   switch (sort) {
     case 'allocated_cost':
       return query
-        .orderBy((item) => direction(item.allocated_cost, descending))
-        .orderBy((item) => direction(item.id, descending));
+        .orderBy((item) => direction(item.allocated_cost, order))
+        .orderBy((item) => direction(item.id, order));
     case 'created_at':
       return query
-        .orderBy((item) => direction(item.created_at, descending))
-        .orderBy((item) => direction(item.id, descending));
+        .orderBy((item) => direction(item.created_at, order))
+        .orderBy((item) => direction(item.id, order));
     case undefined:
       return null;
   }
@@ -85,7 +94,7 @@ export const getItems = async (filter: ItemListQuery = {}): Promise<ItemPage> =>
       .where((item) => item.updated_at.lt(end));
   };
 
-  const sorted = sortItems(query, filter.sort, filter.order === 'desc');
+  const sorted = sortItems(query, filter.sort, filter.order ?? 'asc');
 
   const paginated = filter.page !== undefined || filter.page_size !== undefined;
   if (!paginated) {
@@ -107,20 +116,33 @@ export const getItems = async (filter: ItemListQuery = {}): Promise<ItemPage> =>
   };
 };
 
-export const getItemQuantities = async (): Promise<ItemQuantity[]> => {
+export const getItemQuantities = async (
+  sortOnColumn: ItemQuantitySortField = 'sku',
+  order: ItemSortOrder = 'asc'
+): Promise<ItemQuantity[]> => {
   const rows = await db.orm.public.Item
     .groupBy('sku')
-    .orderBy((item) => item.sku.asc())
     .aggregate((agg) => ({
       name: agg.min('name'), // Return the first name found for each sku
       quantity: agg.count()
     }));
 
-  return rows.map((row) =>
+  const quantities = rows.map((row) =>
     ItemQuantitySchema.parse({
       name: row.name,
       sku: row.sku,
       quantity: row.quantity
     })
   );
+
+  return quantities.sort((left, right) => {
+    switch (sortOnColumn) {
+      case 'quantity':
+        return compareInOrder(left.quantity, right.quantity, order, (a, b) => a - b);
+      case 'name':
+        return compareInOrder(left.name, right.name, order, (a, b) => a.localeCompare(b));
+      case 'sku':
+        return compareInOrder(left.sku, right.sku, order, (a, b) => a.localeCompare(b));
+    }
+  });
 };

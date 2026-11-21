@@ -334,6 +334,48 @@ try {
       quantities
     );
 
+    const probeQuantities = async (
+      sortOnColumn: 'name' | 'sku' | 'quantity',
+      order: 'asc' | 'desc'
+    ) => (await getItemQuantities(sortOnColumn, order)).filter((row) => row.sku === skuA || row.sku === skuB);
+
+    const byNameAsc = await probeQuantities('name', 'asc');
+    check(
+      'getItemQuantities sorts name ascending',
+      byNameAsc.length === 2 && byNameAsc[0]?.name === 'Gadget' && byNameAsc[1]?.name === 'Widget',
+      byNameAsc
+    );
+    const byNameDesc = await probeQuantities('name', 'desc');
+    check(
+      'getItemQuantities sorts name descending',
+      byNameDesc.length === 2 && byNameDesc[0]?.name === 'Widget' && byNameDesc[1]?.name === 'Gadget',
+      byNameDesc
+    );
+    const bySkuAsc = await probeQuantities('sku', 'asc');
+    check(
+      'getItemQuantities sorts sku ascending',
+      bySkuAsc.length === 2 && bySkuAsc[0]?.sku === skuA && bySkuAsc[1]?.sku === skuB,
+      bySkuAsc
+    );
+    const bySkuDesc = await probeQuantities('sku', 'desc');
+    check(
+      'getItemQuantities sorts sku descending',
+      bySkuDesc.length === 2 && bySkuDesc[0]?.sku === skuB && bySkuDesc[1]?.sku === skuA,
+      bySkuDesc
+    );
+    const byQuantityAsc = await probeQuantities('quantity', 'asc');
+    check(
+      'getItemQuantities sorts quantity ascending',
+      byQuantityAsc.length === 2 && byQuantityAsc[0]?.quantity === 1 && byQuantityAsc[1]?.quantity === 2,
+      byQuantityAsc
+    );
+    const byQuantityDesc = await probeQuantities('quantity', 'desc');
+    check(
+      'getItemQuantities sorts quantity descending',
+      byQuantityDesc.length === 2 && byQuantityDesc[0]?.quantity === 2 && byQuantityDesc[1]?.quantity === 1,
+      byQuantityDesc
+    );
+
     await tx.execute(tx.raw.sql`SAVEPOINT supplier_duplicate`.affectedCount().build());
     try {
       await createSupplier({ name: canonical.toUpperCase() });
