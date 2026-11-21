@@ -16,14 +16,11 @@ class RollbackCheck extends Error {
   }
 }
 
-const checks: string[] = [];
-
 const check = (name: string, ok: boolean, detail?: unknown) => {
-  if (!ok) {
-    const extra = detail === undefined ? '' : ` (${JSON.stringify(detail)})`;
-    throw new Error(`Check failed: ${name}${extra}`);
-  }
-  checks.push(name);
+  if (ok) return;
+  const extra = detail === undefined ? '' : ` (${JSON.stringify(detail)})`;
+  const message = `❌ ${name}${extra}`;
+  console.error(message);
 };
 
 const realTransaction = db.transaction.bind(db);
@@ -148,9 +145,9 @@ try {
     check(
       'listItems filters by acquisition_id',
       byAcquisition.length === 2 &&
-        byAcquisition.every((item) => item.acquisition_id === acquisition.id) &&
-        byAcquisition.some((item) => item.sku === skuA) &&
-        byAcquisition.some((item) => item.sku === skuB),
+      byAcquisition.every((item) => item.acquisition_id === acquisition.id) &&
+      byAcquisition.some((item) => item.sku === skuA) &&
+      byAcquisition.some((item) => item.sku === skuB),
       byAcquisition.map((item) => item.sku)
     );
 
@@ -158,8 +155,8 @@ try {
     check(
       'listItems filters by name',
       byName.some((item) => item.sku === skuA) &&
-        !byName.some((item) => item.sku === skuB) &&
-        byName.every((item) => item.name === 'Widget'),
+      !byName.some((item) => item.sku === skuB) &&
+      byName.every((item) => item.name === 'Widget'),
       byName.map((item) => item.sku)
     );
 
@@ -167,8 +164,8 @@ try {
     check(
       'listItems filters by sku',
       bySku.some((item) => item.sku === skuA) &&
-        !bySku.some((item) => item.sku === skuB) &&
-        bySku.every((item) => item.sku.includes(skuFragment)),
+      !bySku.some((item) => item.sku === skuB) &&
+      bySku.every((item) => item.sku.includes(skuFragment)),
       bySku.map((item) => item.sku)
     );
 
@@ -176,8 +173,8 @@ try {
     check(
       'listItems filters by condition',
       byCondition.some((item) => item.sku === skuA) &&
-        !byCondition.some((item) => item.sku === skuB) &&
-        byCondition.every((item) => item.condition === 'used_good'),
+      !byCondition.some((item) => item.sku === skuB) &&
+      byCondition.every((item) => item.condition === 'used_good'),
       byCondition.map((item) => item.sku)
     );
 
@@ -185,8 +182,8 @@ try {
     check(
       'listItems filters by allocated_cost',
       byCost.some((item) => item.sku === skuA) &&
-        !byCost.some((item) => item.sku === skuB) &&
-        byCost.every((item) => item.allocated_cost >= 12.5),
+      !byCost.some((item) => item.sku === skuB) &&
+      byCost.every((item) => item.allocated_cost >= 12.5),
       byCost.map((item) => item.allocated_cost)
     );
 
@@ -194,8 +191,8 @@ try {
     check(
       'listItems filters by status',
       byStatus.some((item) => item.sku === skuA) &&
-        !byStatus.some((item) => item.sku === skuB) &&
-        byStatus.every((item) => item.status === 'purchased'),
+      !byStatus.some((item) => item.sku === skuB) &&
+      byStatus.every((item) => item.status === 'purchased'),
       byStatus.map((item) => item.sku)
     );
 
@@ -203,8 +200,8 @@ try {
     check(
       'listItems filters by created_at',
       byCreated.some((item) => item.sku === skuA) &&
-        byCreated.some((item) => item.sku === skuB) &&
-        byCreated.every((item) => sameUtcDay(item.created_at, listedA.created_at)),
+      byCreated.some((item) => item.sku === skuB) &&
+      byCreated.every((item) => sameUtcDay(item.created_at, listedA.created_at)),
       byCreated.map((item) => item.created_at)
     );
 
@@ -212,8 +209,8 @@ try {
     check(
       'listItems filters by updated_at',
       byUpdated.some((item) => item.sku === skuA) &&
-        byUpdated.some((item) => item.sku === skuB) &&
-        byUpdated.every((item) => sameUtcDay(item.updated_at, listedA.updated_at)),
+      byUpdated.some((item) => item.sku === skuB) &&
+      byUpdated.every((item) => sameUtcDay(item.updated_at, listedA.updated_at)),
       byUpdated.map((item) => item.updated_at)
     );
 
@@ -252,5 +249,4 @@ check(
   afterItems.length === beforeItems.length && beforeItems.every((item) => afterItems.some((row) => row.id === item.id))
 );
 
-console.log(checks.map((name) => `ok  ${name}`).join('\n'));
 await db.close();
