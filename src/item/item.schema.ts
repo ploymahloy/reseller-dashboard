@@ -34,6 +34,15 @@ export const ItemSchema = z.object({
 
 export type Item = z.infer<typeof ItemSchema>;
 
+export const UpdateItemRequestSchema = ItemSchema.partial().extend({
+  id: z.coerce.number().optional(),
+  acquisition_id: z.coerce.number().optional(),
+  allocated_cost: z.coerce.number().nonnegative({ error: 'Allocated cost cannot be negative.' }).optional(),
+  status: ItemStatus.optional()
+});
+
+export type UpdateItemRequest = z.infer<typeof UpdateItemRequestSchema>;
+
 export const CreateItemRequest = ItemSchema.omit({
   id: true,
   acquisition_id: true,

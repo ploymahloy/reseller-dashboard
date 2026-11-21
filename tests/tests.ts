@@ -1,8 +1,8 @@
 import { SqlQueryError } from '@prisma/orm-family-sql/errors';
 
 import { createAcquisition } from '../src/acquisition/acquisition.service.js';
-import { ItemListQuerySchema } from '../src/item/item.schema.js';
-import { getItemQuantities, getItems } from '../src/item/item.service.js';
+import { ItemListQuerySchema, UpdateItemRequestSchema } from '../src/item/item.schema.js';
+import { getItemQuantities, getItems, updateItem } from '../src/item/item.service.js';
 import { db, type Tx } from '../src/prisma/db.js';
 import {
   createSupplier,
@@ -304,6 +304,16 @@ try {
       !ItemListQuerySchema.safeParse({ order: 'sideways' }).success
     );
 
+    const parsedUpdate = UpdateItemRequestSchema.parse({ condition: 'new', allocated_cost: '4.5' });
+    check(
+      'UpdateItemRequestSchema reads query values without defaulting status',
+      parsedUpdate.condition === 'new' &&
+      parsedUpdate.allocated_cost === 4.5 &&
+      parsedUpdate.status === undefined &&
+      UpdateItemRequestSchema.parse({}).status === undefined,
+      parsedUpdate
+    );
+
     const byCostAsc = (await getItems({ acquisition_id: acquisition.id, sort: 'allocated_cost', order: 'asc' })).items;
     check(
       'getItems sorts allocated_cost ascending',
@@ -407,6 +417,19 @@ try {
       'getItemQuantities sorts quantity descending',
       byQuantityDesc.length === 2 && byQuantityDesc[0]?.quantity === 2 && byQuantityDesc[1]?.quantity === 1,
       byQuantityDesc
+    );
+
+    const statusOnly = await updateItem(listedA.id, { status: 'inspecting' });
+    check(
+      'updateItem changes status without clearing allocated_cost',
+      statusOnly.id === listedA.id && statusOnly.status === 'inspecting' && statusOnly.allocated_cost === 12.5,
+      statusOnly
+    );
+    const repriced = await updateItem(listedA.id, { allocated_cost: 4 });
+    check(
+      'updateItem returns allocated_cost as a number',
+      repriced.allocated_cost === 4 && repriced.status === 'inspecting',
+      repriced
     );
 
     await tx.execute(tx.raw.sql`SAVEPOINT supplier_duplicate`.affectedCount().build());

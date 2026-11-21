@@ -146,3 +146,22 @@ export const getItemQuantities = async (
     }
   });
 };
+
+export const updateItem = async (id: Item['id'], data: Partial<Item>): Promise<Item> => {
+  const { allocated_cost: allocatedCost, ...fields } = data;
+  const updatedItem = await db.orm.public.Item
+    .where({ id })
+    .update({
+      ...fields,
+      ...(allocatedCost === undefined ? {} : { allocated_cost: allocatedCost.toFixed(2) })
+    });
+
+  if (updatedItem === null) {
+    throw new Error('Item does not exist');
+  }
+
+  return ItemSchema.parse({
+    ...updatedItem,
+    allocated_cost: asMoney(updatedItem.allocated_cost)
+  });
+};
