@@ -17,10 +17,14 @@ class RollbackCheck extends Error {
   }
 }
 
+let errorCount = 0;
+
 const check = (name: string, ok: boolean, detail?: unknown) => {
   if (ok) return;
   const extra = detail === undefined ? '' : ` (${JSON.stringify(detail)})`;
   const message = `❌ ${name}${extra}`;
+  spinner.clear();
+  errorCount++;
   console.error(message);
 };
 
@@ -61,6 +65,35 @@ const sameUtcDay = (left: Date, right: Date) =>
 
 const beforeNames = await listSupplierNames();
 const beforeItems = (await getItems()).items;
+
+const startSpinner = (text: string) => {
+  const frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+  let i = 0;
+
+  // Hide cursor
+  process.stdout.write('\x1B[?25l');
+
+  const timer = setInterval(() => {
+    process.stdout.write(`\r${frames[i]} ${text}`);
+    i = (i + 1) % frames.length;
+  }, 80);
+
+
+  const clear = () => {
+    clearInterval(timer);
+    // Clear line (\x1B[2K), return to start (\r), and show cursor (\x1B[?25h)
+    process.stdout.write('\r\x1B[2K\x1B[?25h');
+  };
+
+  return {
+    clear, stop(finalText?: string) {
+      clearInterval(timer);
+      process.stdout.write(`\r\x1B[2K${finalText ? `${finalText}\n` : ''}\x1B[?25h`);
+    }
+  };
+};
+
+const spinner = startSpinner('Running tests...');
 
 try {
   await db.transaction(async (tx) => {
@@ -412,3 +445,8 @@ check(
 );
 
 await db.close();
+if (errorCount > 0) {
+  spinner.stop();
+} else {
+  spinner.stop('✅ All tests complete');
+}
