@@ -2,7 +2,7 @@ import { SqlQueryError } from '@prisma/orm-family-sql/errors';
 
 import { createAcquisition } from '../src/acquisition/acquisition.service.js';
 import { ItemListQuerySchema } from '../src/item/item.schema.js';
-import { listItems } from '../src/item/item.service.js';
+import { getItems } from '../src/item/item.service.js';
 import { db, type Tx } from '../src/prisma/db.js';
 import {
   createSupplier,
@@ -60,7 +60,7 @@ const sameUtcDay = (left: Date, right: Date) =>
   left.getUTCDate() === right.getUTCDate();
 
 const beforeNames = await listSupplierNames();
-const beforeItems = (await listItems()).items;
+const beforeItems = (await getItems()).items;
 
 try {
   await db.transaction(async (tx) => {
@@ -130,11 +130,11 @@ try {
       items[1]?.status === 'listed'
     );
 
-    const listed = (await listItems()).items;
+    const listed = (await getItems()).items;
     const listedA = listed.find((item) => item.sku === skuA);
     const listedB = listed.find((item) => item.sku === skuB);
     check(
-      'listItems returns the new items parsed',
+      'getItems returns the new items parsed',
       listedA?.allocated_cost === 12.5 &&
       listedA.condition === 'used_good' &&
       listedA.acquisition_id === acquisition.id &&
@@ -143,12 +143,12 @@ try {
     );
     if (!listedA || !listedB) throw new Error('probe items missing');
 
-    const byId = (await listItems({ id: listedA.id })).items;
-    check('listItems filters by id', byId.length === 1 && byId[0]?.sku === skuA, byId.map((item) => item.id));
+    const byId = (await getItems({ id: listedA.id })).items;
+    check('getItems filters by id', byId.length === 1 && byId[0]?.sku === skuA, byId.map((item) => item.id));
 
-    const byAcquisition = (await listItems({ acquisition_id: acquisition.id })).items;
+    const byAcquisition = (await getItems({ acquisition_id: acquisition.id })).items;
     check(
-      'listItems filters by acquisition_id',
+      'getItems filters by acquisition_id',
       byAcquisition.length === 2 &&
       byAcquisition.every((item) => item.acquisition_id === acquisition.id) &&
       byAcquisition.some((item) => item.sku === skuA) &&
@@ -156,63 +156,63 @@ try {
       byAcquisition.map((item) => item.sku)
     );
 
-    const byName = (await listItems({ name: 'Widget' })).items;
+    const byName = (await getItems({ name: 'Widget' })).items;
     check(
-      'listItems filters by name',
+      'getItems filters by name',
       byName.some((item) => item.sku === skuA) &&
       !byName.some((item) => item.sku === skuB) &&
       byName.every((item) => item.name === 'Widget'),
       byName.map((item) => item.sku)
     );
 
-    const bySku = (await listItems({ sku: skuFragment })).items;
+    const bySku = (await getItems({ sku: skuFragment })).items;
     check(
-      'listItems filters by sku',
+      'getItems filters by sku',
       bySku.some((item) => item.sku === skuA) &&
       !bySku.some((item) => item.sku === skuB) &&
       bySku.every((item) => item.sku.includes(skuFragment)),
       bySku.map((item) => item.sku)
     );
 
-    const byCondition = (await listItems({ condition: 'used_good' })).items;
+    const byCondition = (await getItems({ condition: 'used_good' })).items;
     check(
-      'listItems filters by condition',
+      'getItems filters by condition',
       byCondition.some((item) => item.sku === skuA) &&
       !byCondition.some((item) => item.sku === skuB) &&
       byCondition.every((item) => item.condition === 'used_good'),
       byCondition.map((item) => item.sku)
     );
 
-    const byCost = (await listItems({ allocated_cost: 12.5 })).items;
+    const byCost = (await getItems({ allocated_cost: 12.5 })).items;
     check(
-      'listItems filters by allocated_cost',
+      'getItems filters by allocated_cost',
       byCost.some((item) => item.sku === skuA) &&
       !byCost.some((item) => item.sku === skuB) &&
       byCost.every((item) => item.allocated_cost >= 12.5),
       byCost.map((item) => item.allocated_cost)
     );
 
-    const byStatus = (await listItems({ status: 'purchased' })).items;
+    const byStatus = (await getItems({ status: 'purchased' })).items;
     check(
-      'listItems filters by status',
+      'getItems filters by status',
       byStatus.some((item) => item.sku === skuA) &&
       !byStatus.some((item) => item.sku === skuB) &&
       byStatus.every((item) => item.status === 'purchased'),
       byStatus.map((item) => item.sku)
     );
 
-    const byCreated = (await listItems({ created_at: listedA.created_at })).items;
+    const byCreated = (await getItems({ created_at: listedA.created_at })).items;
     check(
-      'listItems filters by created_at',
+      'getItems filters by created_at',
       byCreated.some((item) => item.sku === skuA) &&
       byCreated.some((item) => item.sku === skuB) &&
       byCreated.every((item) => sameUtcDay(item.created_at, listedA.created_at)),
       byCreated.map((item) => item.created_at)
     );
 
-    const byUpdated = (await listItems({ updated_at: listedA.updated_at })).items;
+    const byUpdated = (await getItems({ updated_at: listedA.updated_at })).items;
     check(
-      'listItems filters by updated_at',
+      'getItems filters by updated_at',
       byUpdated.some((item) => item.sku === skuA) &&
       byUpdated.some((item) => item.sku === skuB) &&
       byUpdated.every((item) => sameUtcDay(item.updated_at, listedA.updated_at)),
@@ -221,9 +221,9 @@ try {
 
     const firstId = Math.min(listedA.id, listedB.id);
     const secondId = Math.max(listedA.id, listedB.id);
-    const firstPage = await listItems({ acquisition_id: acquisition.id, page: 1, page_size: 1 });
+    const firstPage = await getItems({ acquisition_id: acquisition.id, page: 1, page_size: 1 });
     check(
-      'listItems returns the first page',
+      'getItems returns the first page',
       firstPage.page === 1 &&
       firstPage.page_size === 1 &&
       firstPage.total_items === 2 &&
@@ -231,9 +231,9 @@ try {
       firstPage.items[0]?.id === firstId,
       firstPage
     );
-    const secondPage = await listItems({ acquisition_id: acquisition.id, page: 2, page_size: 1 });
+    const secondPage = await getItems({ acquisition_id: acquisition.id, page: 2, page_size: 1 });
     check(
-      'listItems returns the second page',
+      'getItems returns the second page',
       secondPage.page === 2 &&
       secondPage.page_size === 1 &&
       secondPage.total_items === 2 &&
@@ -241,15 +241,15 @@ try {
       secondPage.items[0]?.id === secondId,
       secondPage
     );
-    const emptyPage = await listItems({ acquisition_id: acquisition.id, page: 3, page_size: 1 });
+    const emptyPage = await getItems({ acquisition_id: acquisition.id, page: 3, page_size: 1 });
     check(
-      'listItems returns an empty page past the end',
+      'getItems returns an empty page past the end',
       emptyPage.total_items === 2 && emptyPage.items.length === 0,
       emptyPage
     );
-    const defaultedPage = await listItems({ acquisition_id: acquisition.id, page_size: 1 });
+    const defaultedPage = await getItems({ acquisition_id: acquisition.id, page_size: 1 });
     check(
-      'listItems defaults to the first page',
+      'getItems defaults to the first page',
       defaultedPage.page === 1 && defaultedPage.items.length === 1 && defaultedPage.items[0]?.id === firstId,
       defaultedPage
     );
@@ -271,19 +271,19 @@ try {
       !ItemListQuerySchema.safeParse({ order: 'sideways' }).success
     );
 
-    const byCostAsc = (await listItems({ acquisition_id: acquisition.id, sort: 'allocated_cost', order: 'asc' })).items;
+    const byCostAsc = (await getItems({ acquisition_id: acquisition.id, sort: 'allocated_cost', order: 'asc' })).items;
     check(
-      'listItems sorts allocated_cost ascending',
+      'getItems sorts allocated_cost ascending',
       byCostAsc.length === 2 && byCostAsc[0]?.sku === skuB && byCostAsc[1]?.sku === skuA,
       byCostAsc.map((item) => ({ sku: item.sku, allocated_cost: item.allocated_cost }))
     );
-    const byCostDesc = (await listItems({ acquisition_id: acquisition.id, sort: 'allocated_cost', order: 'desc' })).items;
+    const byCostDesc = (await getItems({ acquisition_id: acquisition.id, sort: 'allocated_cost', order: 'desc' })).items;
     check(
-      'listItems sorts allocated_cost descending',
+      'getItems sorts allocated_cost descending',
       byCostDesc.length === 2 && byCostDesc[0]?.sku === skuA && byCostDesc[1]?.sku === skuB,
       byCostDesc.map((item) => ({ sku: item.sku, allocated_cost: item.allocated_cost }))
     );
-    const costPage = await listItems({
+    const costPage = await getItems({
       acquisition_id: acquisition.id,
       sort: 'allocated_cost',
       order: 'desc',
@@ -291,7 +291,7 @@ try {
       page_size: 1
     });
     check(
-      'listItems pages after the allocated_cost sort',
+      'getItems pages after the allocated_cost sort',
       costPage.total_items === 2 && costPage.items.length === 1 && costPage.items[0]?.sku === skuA,
       costPage
     );
@@ -300,15 +300,15 @@ try {
     const moved = await tx.orm.public.Item.where((item) => item.id.eq(listedA.id)).update({ created_at: earlier });
     check('probe item created_at can be moved', moved?.id === listedA.id && moved.created_at.getTime() === earlier.getTime());
 
-    const byCreatedAsc = (await listItems({ acquisition_id: acquisition.id, sort: 'created_at' })).items;
+    const byCreatedAsc = (await getItems({ acquisition_id: acquisition.id, sort: 'created_at' })).items;
     check(
-      'listItems sorts created_at ascending, defaulting a missing order to asc',
+      'getItems sorts created_at ascending, defaulting a missing order to asc',
       byCreatedAsc.length === 2 && byCreatedAsc[0]?.id === listedA.id && byCreatedAsc[1]?.id === listedB.id,
       byCreatedAsc.map((item) => ({ id: item.id, created_at: item.created_at }))
     );
-    const byCreatedDesc = (await listItems({ acquisition_id: acquisition.id, sort: 'created_at', order: 'desc' })).items;
+    const byCreatedDesc = (await getItems({ acquisition_id: acquisition.id, sort: 'created_at', order: 'desc' })).items;
     check(
-      'listItems sorts created_at descending',
+      'getItems sorts created_at descending',
       byCreatedDesc.length === 2 && byCreatedDesc[0]?.id === listedB.id && byCreatedDesc[1]?.id === listedA.id,
       byCreatedDesc.map((item) => ({ id: item.id, created_at: item.created_at }))
     );
@@ -336,7 +336,7 @@ try {
 }
 
 const afterNames = await listSupplierNames();
-const afterItems = (await listItems()).items;
+const afterItems = (await getItems()).items;
 check('rollback removed the suppliers', ![canonical, wild, decoy].some((name) => afterNames.includes(name)));
 check('rollback removed the items', !afterItems.some((item) => item.sku === skuA || item.sku === skuB));
 check(

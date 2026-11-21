@@ -32,7 +32,7 @@ const sortItems = (query: typeof db.orm.public.Item, sort: ItemListQuery['sort']
   }
 };
 
-export const listItems = async (filter: ItemListQuery = {}): Promise<ItemPage> => {
+export const getItems = async (filter: ItemListQuery = {}): Promise<ItemPage> => {
   let query = db.orm.public.Item;
 
   const id = filter.id;

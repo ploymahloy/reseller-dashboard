@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from 'express';
-import { listItems } from './item.service.js';
+import { getItems } from './item.service.js';
 import { ItemListQuerySchema } from './item.schema.js';
 
 export const itemRouter = Router();
@@ -7,7 +7,7 @@ export const itemRouter = Router();
 itemRouter.get('/', async (req: Request, res: Response) => {
   try {
     const filter = ItemListQuerySchema.parse(req.query);
-    const page = await listItems(filter);
+    const page = await getItems(filter);
     res.status(200).json(page);
   } catch (error) {
     console.error(error);
