@@ -1,9 +1,20 @@
 import { db } from '../prisma/db.js';
-import { type Item, ItemSchema, type ItemFilter } from './item.schema.js';
+import { type Item, ItemSchema, type ItemListQuery, type ItemPage } from './item.schema.js';
+
+const DEFAULT_PAGE_SIZE = 50;
+const MAX_PAGE_SIZE = 100;
 
 const asMoney = (value: string): number => Number(value);
 
-export const listItems = async (filter: ItemFilter = {}): Promise<Item[]> => {
+const asItems = (rows: ReadonlyArray<{ allocated_cost: string }>): Item[] =>
+  rows.map((item) =>
+    ItemSchema.parse({
+      ...item,
+      allocated_cost: asMoney(item.allocated_cost)
+    })
+  );
+
+export const listItems = async (filter: ItemListQuery = {}): Promise<ItemPage> => {
   let query = db.orm.public.Item;
 
   const id = filter.id;
@@ -49,11 +60,25 @@ export const listItems = async (filter: ItemFilter = {}): Promise<Item[]> => {
       .where((item) => item.updated_at.lt(end));
   };
 
-  const items = await query.all();
-  return items.map((item) =>
-    ItemSchema.parse({
-      ...item,
-      allocated_cost: asMoney(item.allocated_cost)
-    })
-  );
+  const paginated = filter.page !== undefined || filter.page_size !== undefined;
+  if (!paginated) {
+    const items = asItems(await query.all());
+    return { items, page: 1, page_size: items.length, total_items: items.length };
+  }
+
+  const page = Math.max(1, filter.page ?? 1);
+  const pageSize = Math.min(Math.max(1, filter.page_size ?? DEFAULT_PAGE_SIZE), MAX_PAGE_SIZE);
+  const counted = await query.aggregate((agg) => ({ total_items: agg.count() }));
+  const rows = await query
+    .orderBy((item) => item.id.asc())
+    .offset((page - 1) * pageSize)
+    .limit(pageSize)
+    .all();
+
+  return {
+    items: asItems(rows),
+    page,
+    page_size: pageSize,
+    total_items: counted.total_items
+  };
 };

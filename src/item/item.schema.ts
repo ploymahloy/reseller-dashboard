@@ -53,6 +53,20 @@ export const ItemFilterSchema = z.object({
   status: ItemStatus.optional(),
   created_at: ItemSchema.shape.created_at.optional(),
   updated_at: ItemSchema.shape.updated_at.optional()
-})
+});
 
 export type ItemFilter = z.infer<typeof ItemFilterSchema>;
+
+export const ItemListQuerySchema = ItemFilterSchema.extend({
+  page: z.coerce.number().int().positive().optional(),
+  page_size: z.coerce.number().int().positive().max(100).optional()
+});
+
+export type ItemListQuery = z.infer<typeof ItemListQuerySchema>;
+
+export type ItemPage = {
+  items: Item[];
+  page: number;
+  page_size: number;
+  total_items: number;
+};

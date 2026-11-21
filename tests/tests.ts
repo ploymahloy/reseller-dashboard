@@ -59,7 +59,7 @@ const sameUtcDay = (left: Date, right: Date) =>
   left.getUTCDate() === right.getUTCDate();
 
 const beforeNames = await listSupplierNames();
-const beforeItems = await listItems();
+const beforeItems = (await listItems()).items;
 
 try {
   await db.transaction(async (tx) => {
@@ -129,7 +129,7 @@ try {
       items[1]?.status === 'listed'
     );
 
-    const listed = await listItems();
+    const listed = (await listItems()).items;
     const listedA = listed.find((item) => item.sku === skuA);
     const listedB = listed.find((item) => item.sku === skuB);
     check(
@@ -142,10 +142,10 @@ try {
     );
     if (!listedA || !listedB) throw new Error('probe items missing');
 
-    const byId = await listItems({ id: listedA.id });
+    const byId = (await listItems({ id: listedA.id })).items;
     check('listItems filters by id', byId.length === 1 && byId[0]?.sku === skuA, byId.map((item) => item.id));
 
-    const byAcquisition = await listItems({ acquisition_id: acquisition.id });
+    const byAcquisition = (await listItems({ acquisition_id: acquisition.id })).items;
     check(
       'listItems filters by acquisition_id',
       byAcquisition.length === 2 &&
@@ -155,7 +155,7 @@ try {
       byAcquisition.map((item) => item.sku)
     );
 
-    const byName = await listItems({ name: 'Widget' });
+    const byName = (await listItems({ name: 'Widget' })).items;
     check(
       'listItems filters by name',
       byName.some((item) => item.sku === skuA) &&
@@ -164,7 +164,7 @@ try {
       byName.map((item) => item.sku)
     );
 
-    const bySku = await listItems({ sku: skuFragment });
+    const bySku = (await listItems({ sku: skuFragment })).items;
     check(
       'listItems filters by sku',
       bySku.some((item) => item.sku === skuA) &&
@@ -173,7 +173,7 @@ try {
       bySku.map((item) => item.sku)
     );
 
-    const byCondition = await listItems({ condition: 'used_good' });
+    const byCondition = (await listItems({ condition: 'used_good' })).items;
     check(
       'listItems filters by condition',
       byCondition.some((item) => item.sku === skuA) &&
@@ -182,7 +182,7 @@ try {
       byCondition.map((item) => item.sku)
     );
 
-    const byCost = await listItems({ allocated_cost: 12.5 });
+    const byCost = (await listItems({ allocated_cost: 12.5 })).items;
     check(
       'listItems filters by allocated_cost',
       byCost.some((item) => item.sku === skuA) &&
@@ -191,7 +191,7 @@ try {
       byCost.map((item) => item.allocated_cost)
     );
 
-    const byStatus = await listItems({ status: 'purchased' });
+    const byStatus = (await listItems({ status: 'purchased' })).items;
     check(
       'listItems filters by status',
       byStatus.some((item) => item.sku === skuA) &&
@@ -200,7 +200,7 @@ try {
       byStatus.map((item) => item.sku)
     );
 
-    const byCreated = await listItems({ created_at: listedA.created_at });
+    const byCreated = (await listItems({ created_at: listedA.created_at })).items;
     check(
       'listItems filters by created_at',
       byCreated.some((item) => item.sku === skuA) &&
@@ -209,13 +209,48 @@ try {
       byCreated.map((item) => item.created_at)
     );
 
-    const byUpdated = await listItems({ updated_at: listedA.updated_at });
+    const byUpdated = (await listItems({ updated_at: listedA.updated_at })).items;
     check(
       'listItems filters by updated_at',
       byUpdated.some((item) => item.sku === skuA) &&
       byUpdated.some((item) => item.sku === skuB) &&
       byUpdated.every((item) => sameUtcDay(item.updated_at, listedA.updated_at)),
       byUpdated.map((item) => item.updated_at)
+    );
+
+    const firstId = Math.min(listedA.id, listedB.id);
+    const secondId = Math.max(listedA.id, listedB.id);
+    const firstPage = await listItems({ acquisition_id: acquisition.id, page: 1, page_size: 1 });
+    check(
+      'listItems returns the first page',
+      firstPage.page === 1 &&
+      firstPage.page_size === 1 &&
+      firstPage.total_items === 2 &&
+      firstPage.items.length === 1 &&
+      firstPage.items[0]?.id === firstId,
+      firstPage
+    );
+    const secondPage = await listItems({ acquisition_id: acquisition.id, page: 2, page_size: 1 });
+    check(
+      'listItems returns the second page',
+      secondPage.page === 2 &&
+      secondPage.page_size === 1 &&
+      secondPage.total_items === 2 &&
+      secondPage.items.length === 1 &&
+      secondPage.items[0]?.id === secondId,
+      secondPage
+    );
+    const emptyPage = await listItems({ acquisition_id: acquisition.id, page: 3, page_size: 1 });
+    check(
+      'listItems returns an empty page past the end',
+      emptyPage.total_items === 2 && emptyPage.items.length === 0,
+      emptyPage
+    );
+    const defaultedPage = await listItems({ acquisition_id: acquisition.id, page_size: 1 });
+    check(
+      'listItems defaults to the first page',
+      defaultedPage.page === 1 && defaultedPage.items.length === 1 && defaultedPage.items[0]?.id === firstId,
+      defaultedPage
     );
 
     await tx.execute(tx.raw.sql`SAVEPOINT supplier_duplicate`.affectedCount().build());
@@ -241,7 +276,7 @@ try {
 }
 
 const afterNames = await listSupplierNames();
-const afterItems = await listItems();
+const afterItems = (await listItems()).items;
 check('rollback removed the suppliers', ![canonical, wild, decoy].some((name) => afterNames.includes(name)));
 check('rollback removed the items', !afterItems.some((item) => item.sku === skuA || item.sku === skuB));
 check(
