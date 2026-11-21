@@ -1,0 +1,1 @@
+export const asMoney = (value: string): number => Number(value);

@@ -3,10 +3,10 @@ import { db, type Tx } from '../prisma/db.js';
 
 import { getSupplierName } from '../supplier/supplier.service.js';
 import type { CreateAcquisitionRequest } from './acquisition.schema.js';
+import { asMoney } from '../shared/utils.js';
 
 const money = (value: number) => value.toFixed(2);
 const purchaseDate = (value: Date) => value.toISOString().slice(0, 10);
-const asMoney = (value: string): number => Number(value);
 
 const manifestJson = (rows: CreateAcquisitionRequest['manifest']) => {
   if (rows == null) return null;

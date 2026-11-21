@@ -1,10 +1,9 @@
 import { db } from '../prisma/db.js';
 import { type Item, ItemSchema, type ItemListQuery, type ItemPage } from './item.schema.js';
+import { asMoney } from '../shared/utils.js';
 
 const DEFAULT_PAGE_SIZE = 50;
 const MAX_PAGE_SIZE = 100;
-
-const asMoney = (value: string): number => Number(value);
 
 const asItems = (rows: ReadonlyArray<{ allocated_cost: string }>): Item[] =>
   rows.map((item) =>
