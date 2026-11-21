@@ -57,16 +57,17 @@ model Acquisition {
 }
 
 model Item {
-  id             BigInt(as: number)               @id @default(autoincrement())
+  id             BigInt(as: number)                @id @default(autoincrement())
   acquisition_id BigInt(as: number)
-  acquisition    Acquisition                      @relation(fields: [acquisition_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  acquisition    Acquisition                       @relation(fields: [acquisition_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
   name           String
   sku            String
   condition      pg.enum(ItemCondition)
   allocated_cost Decimal(precision: 12, scale: 2)
-  status         pg.enum(ItemStatus)              @default("purchased")
-  created_at     DateTime(precision: 6)           @default(now()) @onCreate(now())
-  updated_at     DateTime(precision: 6)           @default(now()) @onCreate(now()) @onUpdate(now())
+  list_price     Decimal(precision: 12, scale: 2)?
+  status         pg.enum(ItemStatus)               @default("purchased")
+  created_at     DateTime(precision: 6)            @default(now()) @onCreate(now())
+  updated_at     DateTime(precision: 6)            @default(now()) @onCreate(now()) @onUpdate(now())
 
   @@check(expression: sql`TRIM(name) <> ''`, name: "item_name_not_blank")
   @@check(expression: sql`TRIM(sku) <> ''`, name: "item_sku_not_blank")
