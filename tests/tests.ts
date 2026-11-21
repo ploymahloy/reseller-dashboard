@@ -23,20 +23,24 @@ const check = (name: string, ok: boolean, detail?: unknown) => {
   console.error(message);
 };
 
-const realTransaction = db.transaction.bind(db);
-const realOrm = db.orm;
+const client = db as {
+  orm: typeof db.orm;
+  transaction: typeof db.transaction;
+};
+const realTransaction = client.transaction.bind(client);
+const realOrm = client.orm;
 let joined: Tx | null = null;
 
-db.transaction = (async (fn, options) => {
+client.transaction = (async (fn, options) => {
   if (joined) return fn(joined);
   return realTransaction(async (tx) => {
     joined = tx;
-    db.orm = tx.orm;
+    client.orm = tx.orm;
     try {
       return await fn(tx);
     } finally {
       joined = null;
-      db.orm = realOrm;
+      client.orm = realOrm;
     }
   }, options);
 }) as typeof db.transaction;
