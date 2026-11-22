@@ -3,12 +3,12 @@ import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 // Hoisted workspace packages need an absolute path so Storybook can resolve them.
-function getAbsolutePath(value: string) {
+const getAbsolutePath = (value: string): string => {
   return dirname(fileURLToPath(import.meta.resolve(`${value}/package.json`)))
 }
 
 const config: StorybookConfig = {
-  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+  stories: ['../src/**/*.stories.@(ts|tsx)'],
   addons: [
     getAbsolutePath('@chromatic-com/storybook'),
     getAbsolutePath('@storybook/addon-vitest'),
