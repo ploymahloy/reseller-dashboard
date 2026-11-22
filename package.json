@@ -1,36 +1,22 @@
 {
   "name": "reseller-dashboard",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "server",
+    "client"
+  ],
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "tsx tests/tests.ts",
-    "build": "tsc --noEmit",
-    "start": "node dist/index.js",
-    "contract:emit": "prisma contract emit",
-    "db:init": "prisma db init"
+    "dev": "concurrently -n server,client -c blue,green \"npm run dev -w server\" \"npm run dev -w client\"",
+    "dev:server": "npm run dev -w server",
+    "dev:client": "npm run dev -w client",
+    "test": "npm run test -w server",
+    "build": "npm run build --workspaces --if-present",
+    "start": "npm run start -w server",
+    "contract:emit": "npm run contract:emit -w server",
+    "db:init": "npm run db:init -w server"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
   "devDependencies": {
-    "@prisma/cli-engine": "^0.10.0",
-    "@types/express": "^5.0.6",
-    "@types/node": "^26.6.6",
-    "@types/pg": "^8.23.1",
-    "prisma": "^8.0.0-rc.34",
-    "tsx": "^4.23.15",
-    "typescript": "^7.0.2"
-  },
-  "dependencies": {
-    "@prisma/adapter-pg": "^7.10.1",
-    "@prisma/client": "^7.10.1",
-    "@prisma/orm-postgres": "^8.0.0-rc.24",
-    "dotenv": "^18.0.10",
-    "express": "^5.3.0",
-    "pg": "^8.23.1",
-    "zod": "^4.6.7"
+    "concurrently": "^9.2.1"
   }
 }
