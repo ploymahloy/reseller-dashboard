@@ -38,6 +38,20 @@ export const Top: Story = {
   ),
 }
 
+export const Narrow: Story = {
+  render: () => (
+    <div className="max-w-sm">
+      <TopBar wordmark="Reseller" label="Primary" actions={<Button>List item</Button>}>
+        <NavItem href="#inventory" current>
+          Inventory
+        </NavItem>
+        <NavItem href="#acquisitions">Acquisitions</NavItem>
+        <NavItem href="#listings">Listings</NavItem>
+      </TopBar>
+    </div>
+  ),
+}
+
 export const Side: Story = {
   render: () => (
     <Sidebar label="Primary">

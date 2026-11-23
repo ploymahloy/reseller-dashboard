@@ -47,6 +47,16 @@ export const SearchIcon = ({ className, ...props }: IconSvgProps) => {
   )
 }
 
+export const MenuIcon = ({ className, ...props }: IconSvgProps) => {
+  return (
+    <svg {...base} {...props} className={cx('size-full', className)}>
+      <path d="M4 7h16" />
+      <path d="M4 12h16" />
+      <path d="M4 17h16" />
+    </svg>
+  )
+}
+
 export const CloseIcon = ({ className, ...props }: IconSvgProps) => {
   return (
     <svg {...base} {...props} className={cx('size-full', className)}>

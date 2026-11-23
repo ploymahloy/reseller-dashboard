@@ -5,7 +5,7 @@ export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardImage, 
 export { Checkbox } from './Checkbox'
 export { Dialog, DialogBody, DialogClose, DialogDescription, DialogFooter, DialogTitle } from './Dialog'
 export { Field, FieldError, FieldHint, FieldLabel, FieldMessages, RequiredMark } from './Field'
-export { CheckIcon, ChevronDownIcon, CloseIcon, Icon, PlusIcon, SearchIcon, SpinnerIcon, type IconSize } from './Icon'
+export { CheckIcon, ChevronDownIcon, CloseIcon, Icon, MenuIcon, PlusIcon, SearchIcon, SpinnerIcon, type IconSize } from './Icon'
 export { NavItem, Sidebar, TopBar } from './Nav'
 export { Radio, RadioGroup } from './Radio'
 export { Select } from './Select'
