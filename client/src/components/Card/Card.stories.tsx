@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import productImage from './card-product.jpg'
+import productImage from './camera.jpg'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardImage, CardTitle } from './Card'
 
 const meta = {

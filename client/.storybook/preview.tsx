@@ -1,12 +1,15 @@
 import type { Preview } from '@storybook/react-vite'
 import '../src/index.css'
 
+const endsWithColorCaseInsensitive = /(background|color)$/i
+const endsWithDateCaseInsensitive = /Date$/i
+
 const preview: Preview = {
   parameters: {
     controls: {
       matchers: {
-        color: /(background|color)$/i,
-        date: /Date$/i,
+        color: endsWithColorCaseInsensitive,
+        date: endsWithDateCaseInsensitive,
       },
     },
     a11y: {
@@ -15,7 +18,7 @@ const preview: Preview = {
       // 'off' - skip a11y checks entirely
       test: 'todo',
     },
-  },
+  }
 }
 
 export default preview

@@ -13,7 +13,7 @@ export const Card = ({ className, ...props }: ComponentProps<'div'>) => {
   return (
     <div
       className={cx(
-        '@container min-w-0 max-w-full overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-100 shadow-sm',
+        '@container min-w-0 max-w-full overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-100 shadow-sm',
         className,
       )}
       {...props}
