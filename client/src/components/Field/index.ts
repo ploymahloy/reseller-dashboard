@@ -1,1 +1,1 @@
-export { Field, FieldError, FieldHint, FieldLabel, FieldMessages } from './Field'
+export { Field, FieldError, FieldHint, FieldLabel, FieldMessages, RequiredMark } from './Field'

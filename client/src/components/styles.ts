@@ -1,5 +1,6 @@
 import { cx } from '../utils/cx'
 
+// Shared styles
 export const focusRing =
   'outline-none focus-visible:border-focus focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-canvas data-[state=focus]:border-focus data-[state=focus]:ring-2 data-[state=focus]:ring-focus data-[state=focus]:ring-offset-2 data-[state=focus]:ring-offset-canvas'
 

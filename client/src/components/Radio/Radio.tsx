@@ -1,11 +1,12 @@
 import { createContext, useContext, useId, type ComponentProps, type ReactNode } from 'react'
 import { describedBy } from '../../utils/describedBy'
 import { cx } from '../../utils/cx'
-import { Field, FieldMessages } from '../Field'
+import { Field, FieldMessages, RequiredMark } from '../Field'
 
 type RadioContextValue = {
   name: string
   invalid: boolean
+  required: boolean
   describedById?: string
 }
 
@@ -27,11 +28,12 @@ type RadioGroupProps = {
   name: string
   hint?: ReactNode
   error?: ReactNode
+  required?: boolean
   children: ReactNode
   className?: string
 }
 
-export const RadioGroup = ({ label, name, hint, error, children, className }: RadioGroupProps) => {
+export const RadioGroup = ({ label, name, hint, error, required = false, children, className }: RadioGroupProps) => {
   const labelId = useId()
   const hintId = useId()
   const errorId = useId()
@@ -47,8 +49,9 @@ export const RadioGroup = ({ label, name, hint, error, children, className }: Ra
     >
       <span id={labelId} className="text-label text-fg">
         {label}
+        {required ? <RequiredMark /> : null}
       </span>
-      <RadioContext.Provider value={{ name, invalid: Boolean(error), describedById: description }}>
+      <RadioContext.Provider value={{ name, invalid: Boolean(error), required, describedById: description }}>
         <div className="flex flex-col gap-2">{children}</div>
       </RadioContext.Provider>
       <FieldMessages hint={hint} error={error} hintId={hintId} errorId={errorId} />
@@ -60,7 +63,7 @@ type RadioProps = Omit<ComponentProps<'input'>, 'type'> & {
   label: ReactNode
 }
 
-export const Radio = ({ label, id, className, disabled, name, ...props }: RadioProps) => {
+export const Radio = ({ label, id, className, disabled, name, required, ...props }: RadioProps) => {
   const context = useContext(RadioContext)
   const autoId = useId()
   const fieldId = id ?? autoId
@@ -76,6 +79,7 @@ export const Radio = ({ label, id, className, disabled, name, ...props }: RadioP
           id={fieldId}
           name={name ?? context?.name}
           type="radio"
+          required={required ?? context?.required}
           disabled={disabled}
           aria-invalid={context?.invalid ? true : undefined}
           aria-describedby={context?.describedById}

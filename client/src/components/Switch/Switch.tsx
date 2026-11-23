@@ -1,7 +1,7 @@
 import { useId, type ComponentProps, type ReactNode } from 'react'
 import { describedBy } from '../../utils/describedBy'
 import { cx } from '../../utils/cx'
-import { Field, FieldMessages } from '../Field'
+import { Field, FieldMessages, RequiredMark } from '../Field'
 
 const trackClass = cx(
   'pointer-events-none block h-5 w-9 shrink-0 rounded-full bg-neutral-300 p-0.5 transition-colors',
@@ -20,7 +20,7 @@ type SwitchProps = Omit<ComponentProps<'input'>, 'type' | 'role'> & {
   error?: ReactNode
 }
 
-export const Switch = ({ label, hint, error, id, className, disabled, ...props }: SwitchProps) => {
+export const Switch = ({ label, hint, error, required, id, className, disabled, ...props }: SwitchProps) => {
   const autoId = useId()
   const fieldId = id ?? autoId
   const hintId = useId()
@@ -38,6 +38,7 @@ export const Switch = ({ label, hint, error, id, className, disabled, ...props }
           type="checkbox"
           role="switch"
           disabled={disabled}
+          required={required}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy(hint, hintId, error, errorId)}
           className={cx('peer sr-only outline-none', className)}
@@ -46,6 +47,7 @@ export const Switch = ({ label, hint, error, id, className, disabled, ...props }
           <span className="block size-4 rounded-full bg-white shadow-sm transition-transform" />
         </span>
         {label}
+        {required ? <RequiredMark /> : null}
       </label>
       <FieldMessages hint={hint} error={error} hintId={hintId} errorId={errorId} />
     </Field>

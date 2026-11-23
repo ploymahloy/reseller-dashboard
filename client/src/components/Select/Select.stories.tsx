@@ -67,6 +67,16 @@ export const Error: Story = {
   },
 }
 
+export const Required: Story = {
+  args: {
+    label: 'Condition',
+    hint: 'Shown on the public listing.',
+    defaultValue: 'used',
+    required: true,
+    children: options,
+  },
+}
+
 export const Disabled: Story = {
   args: {
     label: 'Condition',

@@ -1,7 +1,7 @@
 import { useId, type ComponentProps, type ReactNode } from 'react'
 import { describedBy } from '../../utils/describedBy'
 import { cx } from '../../utils/cx'
-import { Field, FieldMessages } from '../Field'
+import { Field, FieldMessages, RequiredMark } from '../Field'
 import { CheckIcon, Icon } from '../Icon'
 import { focusRing } from '../styles'
 
@@ -22,7 +22,7 @@ type CheckboxProps = Omit<ComponentProps<'input'>, 'type'> & {
   error?: ReactNode
 }
 
-export const Checkbox = ({ label, hint, error, id, className, disabled, ...props }: CheckboxProps) => {
+export const Checkbox = ({ label, hint, error, required, id, className, disabled, ...props }: CheckboxProps) => {
   const autoId = useId()
   const fieldId = id ?? autoId
   const hintId = useId()
@@ -40,6 +40,7 @@ export const Checkbox = ({ label, hint, error, id, className, disabled, ...props
             id={fieldId}
             type="checkbox"
             disabled={disabled}
+            required={required}
             aria-invalid={error ? true : undefined}
             aria-describedby={describedBy(hint, hintId, error, errorId)}
             className={cx(boxClass, className)}
@@ -52,6 +53,7 @@ export const Checkbox = ({ label, hint, error, id, className, disabled, ...props
           </Icon>
         </span>
         {label}
+        {required ? <RequiredMark /> : null}
       </label>
       <FieldMessages hint={hint} error={error} hintId={hintId} errorId={errorId} />
     </Field>

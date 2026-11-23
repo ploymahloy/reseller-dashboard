@@ -30,15 +30,23 @@ const Fulfillment = ({
   error,
   disabled,
   focus,
+  required,
 }: {
   error?: string
   disabled?: boolean
   focus?: boolean
+  required?: boolean
 }) => {
   const name = useId()
 
   return (
-    <RadioGroup name={name} label="Fulfillment" hint="How this item leaves inventory." error={error}>
+    <RadioGroup
+      name={name}
+      label="Fulfillment"
+      hint="How this item leaves inventory."
+      error={error}
+      required={required}
+    >
       <Radio label="Pickup" value="pickup" defaultChecked disabled={disabled} data-state={focus ? 'focus' : undefined} />
       <Radio label="Ship" value="ship" disabled={disabled} />
     </RadioGroup>
@@ -55,6 +63,10 @@ export const Focus: Story = {
 
 export const Error: Story = {
   render: () => <Fulfillment error="Choose how this item will be fulfilled." />,
+}
+
+export const Required: Story = {
+  render: () => <Fulfillment required />,
 }
 
 export const Disabled: Story = {

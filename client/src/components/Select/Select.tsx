@@ -11,7 +11,7 @@ type SelectProps = ComponentProps<'select'> & {
   error?: ReactNode
 }
 
-export const Select = ({ label, hint, error, id, className, disabled, children, ...props }: SelectProps) => {
+export const Select = ({ label, hint, error, required, id, className, disabled, children, ...props }: SelectProps) => {
   const autoId = useId()
   const fieldId = id ?? autoId
   const hintId = useId()
@@ -19,11 +19,14 @@ export const Select = ({ label, hint, error, id, className, disabled, children, 
 
   return (
     <Field>
-      <FieldLabel htmlFor={fieldId}>{label}</FieldLabel>
+      <FieldLabel htmlFor={fieldId} required={required}>
+        {label}
+      </FieldLabel>
       <div className="relative">
         <select
           {...props}
           id={fieldId}
+          required={required}
           disabled={disabled}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy(hint, hintId, error, errorId)}

@@ -46,6 +46,15 @@ export const Error: Story = {
   },
 }
 
+export const Required: Story = {
+  args: {
+    label: 'Notes',
+    placeholder: 'Condition, inclusions, flaws.',
+    hint: 'Shown to buyers on the listing.',
+    required: true,
+  },
+}
+
 export const Disabled: Story = {
   args: {
     label: 'Notes',

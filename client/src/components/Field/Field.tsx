@@ -5,8 +5,29 @@ export const Field = ({ className, ...props }: ComponentProps<'div'>) => {
   return <div className={cx('flex w-full min-w-0 flex-col gap-1 font-sans', className)} {...props} />
 }
 
-export const FieldLabel = ({ className, ...props }: ComponentProps<'label'>) => {
-  return <label className={cx('text-label text-fg', className)} {...props} />
+export const RequiredMark = () => {
+  return (
+    <span className="text-error-fg">
+      <span className="sr-only"> (required)</span>
+      <span aria-hidden="true" className="ml-0.5">
+        *
+      </span>
+    </span>
+  )
+}
+
+export const FieldLabel = ({
+  className,
+  required = false,
+  children,
+  ...props
+}: ComponentProps<'label'> & { required?: boolean }) => {
+  return (
+    <label className={cx('text-label text-fg', className)} {...props}>
+      {children}
+      {required ? <RequiredMark /> : null}
+    </label>
+  )
 }
 
 export const FieldHint = ({ className, ...props }: ComponentProps<'p'>) => {

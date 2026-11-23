@@ -1,23 +1,21 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import productImage from './camera.jpg'
+import { ThemePanels } from '../../tokens/ThemePanels'
+import { Button } from '../Button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardImage, CardTitle } from './Card'
 
 const meta = {
   title: 'Components/Card',
   component: Card,
-  parameters: {
-    layout: 'centered',
-    backgrounds: {
-      default: 'dark',
-      options: {
-        dark: { name: 'dark', value: '#09090b' },
-      },
-    },
-  },
+  parameters: { layout: 'fullscreen' },
   decorators: [
     (Story) => (
-      <div className="w-[min(100vw_-_2rem,24rem)]">
-        <Story />
+      <div className="bg-canvas p-6 font-sans text-fg">
+        <ThemePanels>
+          <div className="w-full max-w-sm">
+            <Story />
+          </div>
+        </ThemePanels>
       </div>
     ),
   ],
@@ -34,9 +32,7 @@ export const Default: Story = {
         <CardDescription>Items ready to list.</CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="text-[length:clamp(1.5rem,0.375rem+6.25cqi,1.875rem)] leading-none font-semibold tracking-tight">
-          128
-        </p>
+        <p className="text-heading">128</p>
       </CardContent>
     </Card>
   ),
@@ -50,21 +46,11 @@ export const WithActions: Story = {
         <CardDescription>Pending supplier receipt.</CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="text-zinc-300">12 units from Northwind Supply, due Friday.</p>
+        <p>12 units from Northwind Supply, due Friday.</p>
       </CardContent>
       <CardFooter>
-        <button
-          type="button"
-          className="rounded-md bg-zinc-100 px-3 py-1.5 font-medium text-zinc-950 hover:cursor-pointer"
-        >
-          Mark received
-        </button>
-        <button
-          type="button"
-          className="rounded-md px-3 py-1.5 font-medium text-zinc-300 hover:cursor-pointer"
-        >
-          Dismiss
-        </button>
+        <Button>Mark received</Button>
+        <Button variant="ghost">Dismiss</Button>
       </CardFooter>
     </Card>
   ),
@@ -79,17 +65,10 @@ export const WithImage: Story = {
         <CardDescription>Ready to list. One photo on file.</CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="text-[length:clamp(1.5rem,0.375rem+6.25cqi,1.875rem)] leading-none font-semibold tracking-tight">
-          $240
-        </p>
+        <p className="text-heading">$240</p>
       </CardContent>
       <CardFooter>
-        <button
-          type="button"
-          className="rounded-md w-100 bg-zinc-100 px-3 py-1.5 font-medium text-zinc-950 hover:cursor-pointer"
-        >
-          List item
-        </button>
+        <Button className="w-full">List item</Button>
       </CardFooter>
     </Card>
   ),
@@ -99,7 +78,7 @@ export const ContentOnly: Story = {
   render: () => (
     <Card className="w-full">
       <CardContent>
-        <p className="text-zinc-300">No open acquisitions.</p>
+        <p>No open acquisitions.</p>
       </CardContent>
     </Card>
   ),

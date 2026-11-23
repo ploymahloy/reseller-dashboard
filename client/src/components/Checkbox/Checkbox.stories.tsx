@@ -41,6 +41,14 @@ export const Error: Story = {
   },
 }
 
+export const Required: Story = {
+  args: {
+    label: 'Item has been inspected',
+    hint: 'Required before listing.',
+    required: true,
+  },
+}
+
 export const Disabled: Story = {
   args: { label: 'Include the original strap', disabled: true },
   render: (args) => (

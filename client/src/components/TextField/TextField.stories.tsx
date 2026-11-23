@@ -46,6 +46,15 @@ export const Error: Story = {
   },
 }
 
+export const Required: Story = {
+  args: {
+    label: 'SKU',
+    placeholder: 'CAM-104',
+    hint: 'Used on listings and receipts.',
+    required: true,
+  },
+}
+
 export const Disabled: Story = {
   args: {
     label: 'SKU',

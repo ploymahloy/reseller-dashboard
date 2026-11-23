@@ -41,6 +41,14 @@ export const Error: Story = {
   },
 }
 
+export const Required: Story = {
+  args: {
+    label: 'Publish listing',
+    hint: 'Required to make the item public.',
+    required: true,
+  },
+}
+
 export const Disabled: Story = {
   args: { label: 'Publish listing', disabled: true },
   render: (args) => (

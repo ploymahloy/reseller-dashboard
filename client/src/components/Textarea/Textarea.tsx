@@ -10,7 +10,7 @@ type TextareaProps = ComponentProps<'textarea'> & {
   error?: ReactNode
 }
 
-export const Textarea = ({ label, hint, error, id, className, disabled, ...props }: TextareaProps) => {
+export const Textarea = ({ label, hint, error, required, id, className, disabled, ...props }: TextareaProps) => {
   const autoId = useId()
   const fieldId = id ?? autoId
   const hintId = useId()
@@ -18,10 +18,13 @@ export const Textarea = ({ label, hint, error, id, className, disabled, ...props
 
   return (
     <Field>
-      <FieldLabel htmlFor={fieldId}>{label}</FieldLabel>
+      <FieldLabel htmlFor={fieldId} required={required}>
+        {label}
+      </FieldLabel>
       <textarea
         {...props}
         id={fieldId}
+        required={required}
         disabled={disabled}
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy(hint, hintId, error, errorId)}

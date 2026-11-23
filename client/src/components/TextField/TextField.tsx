@@ -10,7 +10,7 @@ type TextFieldProps = ComponentProps<'input'> & {
   error?: ReactNode
 }
 
-export const TextField = ({ label, hint, error, id, className, disabled, ...props }: TextFieldProps) => {
+export const TextField = ({ label, hint, error, required, id, className, disabled, ...props }: TextFieldProps) => {
   const autoId = useId()
   const fieldId = id ?? autoId
   const hintId = useId()
@@ -18,10 +18,13 @@ export const TextField = ({ label, hint, error, id, className, disabled, ...prop
 
   return (
     <Field>
-      <FieldLabel htmlFor={fieldId}>{label}</FieldLabel>
+      <FieldLabel htmlFor={fieldId} required={required}>
+        {label}
+      </FieldLabel>
       <input
         {...props}
         id={fieldId}
+        required={required}
         disabled={disabled}
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy(hint, hintId, error, errorId)}

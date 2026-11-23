@@ -47,6 +47,15 @@ export const SearchIcon = ({ className, ...props }: IconSvgProps) => {
   )
 }
 
+export const CloseIcon = ({ className, ...props }: IconSvgProps) => {
+  return (
+    <svg {...base} {...props} className={cx('size-full', className)}>
+      <path d="M18 6 6 18" />
+      <path d="M6 6l12 12" />
+    </svg>
+  )
+}
+
 export const SpinnerIcon = ({ className, ...props }: IconSvgProps) => {
   return (
     <svg {...base} {...props} strokeWidth={1.5} className={cx('size-full motion-safe:animate-spin', className)}>
