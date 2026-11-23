@@ -1,0 +1,184 @@
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  --text-display: 2.25rem;
+  --text-display--line-height: 2.5rem;
+  --text-display--font-weight: 600;
+  --text-display--letter-spacing: -0.025em;
+
+  --text-heading: 1.5rem;
+  --text-heading--line-height: 2rem;
+  --text-heading--font-weight: 600;
+  --text-heading--letter-spacing: -0.025em;
+
+  --text-title: 1.125rem;
+  --text-title--line-height: 1.5rem;
+  --text-title--font-weight: 600;
+  --text-title--letter-spacing: -0.015em;
+
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.375rem;
+  --text-body--font-weight: 400;
+
+  --text-body-sm: 0.8125rem;
+  --text-body-sm--line-height: 1.125rem;
+  --text-body-sm--font-weight: 400;
+
+  --text-label: 0.75rem;
+  --text-label--line-height: 1rem;
+  --text-label--font-weight: 500;
+
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1rem;
+  --text-caption--font-weight: 400;
+
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-10: 2.5rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+
+  --radius-sm: 0.125rem;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.375rem;
+  --radius-xl: 0.5rem;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  --color-neutral-50: oklch(98.5% 0 none);
+  --color-neutral-100: oklch(96.7% 0.001 286.375);
+  --color-neutral-200: oklch(92% 0.004 286.32);
+  --color-neutral-300: oklch(87.1% 0.006 286.286);
+  --color-neutral-400: oklch(70.5% 0.015 286.067);
+  --color-neutral-500: oklch(55.2% 0.016 285.938);
+  --color-neutral-600: oklch(44.2% 0.017 285.786);
+  --color-neutral-700: oklch(37% 0.013 285.805);
+  --color-neutral-800: oklch(27.4% 0.006 286.033);
+  --color-neutral-900: oklch(21% 0.006 285.885);
+  --color-neutral-950: oklch(14.1% 0.005 285.823);
+
+  --color-brand-50: oklch(96.2% 0.018 272.314);
+  --color-brand-100: oklch(93% 0.034 272.788);
+  --color-brand-200: oklch(87% 0.065 274.039);
+  --color-brand-300: oklch(78.5% 0.115 274.713);
+  --color-brand-400: oklch(67.3% 0.182 276.935);
+  --color-brand-500: oklch(58.5% 0.233 277.117);
+  --color-brand-600: oklch(51.1% 0.262 276.966);
+  --color-brand-700: oklch(45.7% 0.24 277.023);
+  --color-brand-800: oklch(39.8% 0.195 277.366);
+  --color-brand-900: oklch(35.9% 0.144 278.697);
+  --color-brand-950: oklch(25.7% 0.09 281.288);
+
+  --color-success-100: oklch(95% 0.052 163.051);
+  --color-success-300: oklch(84.5% 0.143 164.978);
+  --color-success-400: oklch(76.5% 0.177 163.223);
+  --color-success-500: oklch(69.6% 0.17 162.48);
+  --color-success-600: oklch(59.6% 0.145 163.225);
+  --color-success-700: oklch(50.8% 0.118 165.612);
+  --color-success-800: oklch(43.2% 0.095 166.913);
+  --color-success-900: oklch(37.8% 0.077 168.94);
+
+  --color-warning-100: oklch(96.2% 0.059 95.617);
+  --color-warning-300: oklch(87.9% 0.169 91.605);
+  --color-warning-400: oklch(82.8% 0.189 84.429);
+  --color-warning-500: oklch(76.9% 0.188 70.08);
+  --color-warning-600: oklch(66.6% 0.179 58.318);
+  --color-warning-700: oklch(55.5% 0.163 48.998);
+  --color-warning-800: oklch(47.3% 0.137 46.201);
+  --color-warning-900: oklch(41.4% 0.112 45.904);
+
+  --color-error-100: oklch(93.6% 0.032 17.717);
+  --color-error-300: oklch(80.8% 0.114 19.571);
+  --color-error-400: oklch(70.4% 0.191 22.216);
+  --color-error-500: oklch(63.7% 0.237 25.331);
+  --color-error-600: oklch(57.7% 0.245 27.325);
+  --color-error-700: oklch(50.5% 0.213 27.518);
+  --color-error-800: oklch(44.4% 0.177 26.899);
+  --color-error-900: oklch(39.6% 0.141 25.723);
+
+  --color-info-100: oklch(95.1% 0.026 236.824);
+  --color-info-300: oklch(82.8% 0.111 230.318);
+  --color-info-400: oklch(74.6% 0.16 232.661);
+  --color-info-500: oklch(68.5% 0.169 237.323);
+  --color-info-600: oklch(58.8% 0.158 241.966);
+  --color-info-700: oklch(50% 0.134 242.749);
+  --color-info-800: oklch(44.3% 0.11 240.79);
+  --color-info-900: oklch(39.1% 0.09 240.876);
+
+  --color-brand-solid: var(--color-brand-600);
+  --color-on-brand: var(--color-white);
+  --color-success-solid: var(--color-success-800);
+  --color-on-success: var(--color-white);
+  --color-warning-solid: var(--color-warning-400);
+  --color-on-warning: var(--color-neutral-950);
+  --color-error-solid: var(--color-error-700);
+  --color-on-error: var(--color-white);
+  --color-info-solid: var(--color-info-800);
+  --color-on-info: var(--color-white);
+  --color-border-strong: var(--color-neutral-500);
+
+  --default-ring-width: 2px;
+  --default-ring-color: var(--theme-focus);
+}
+
+@theme inline {
+  --color-canvas: var(--theme-canvas);
+  --color-surface: var(--theme-surface);
+  --color-fg: var(--theme-fg);
+  --color-fg-muted: var(--theme-fg-muted);
+  --color-border: var(--theme-border);
+  --color-brand-fg: var(--theme-brand-fg);
+  --color-success-fg: var(--theme-success-fg);
+  --color-warning-fg: var(--theme-warning-fg);
+  --color-error-fg: var(--theme-error-fg);
+  --color-info-fg: var(--theme-info-fg);
+  --color-focus: var(--theme-focus);
+}
+
+:root {
+  color-scheme: light;
+  --theme-canvas: var(--color-neutral-50);
+  --theme-surface: var(--color-white);
+  --theme-fg: var(--color-neutral-950);
+  --theme-fg-muted: var(--color-neutral-600);
+  --theme-border: var(--color-neutral-200);
+  --theme-brand-fg: var(--color-brand-600);
+  --theme-success-fg: var(--color-success-800);
+  --theme-warning-fg: var(--color-warning-800);
+  --theme-error-fg: var(--color-error-700);
+  --theme-info-fg: var(--color-info-800);
+  --theme-focus: var(--color-brand-600);
+}
+
+.dark {
+  color-scheme: dark;
+  --theme-canvas: var(--color-neutral-950);
+  --theme-surface: var(--color-neutral-900);
+  --theme-fg: var(--color-neutral-100);
+  --theme-fg-muted: var(--color-neutral-400);
+  --theme-border: var(--color-neutral-800);
+  --theme-brand-fg: var(--color-brand-400);
+  --theme-success-fg: var(--color-success-400);
+  --theme-warning-fg: var(--color-warning-400);
+  --theme-error-fg: var(--color-error-400);
+  --theme-info-fg: var(--color-info-400);
+  --theme-focus: var(--color-brand-400);
+}
