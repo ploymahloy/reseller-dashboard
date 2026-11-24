@@ -2,11 +2,12 @@ import { BASE_URL } from "./config";
 
 type Result<T, E = Error> =
     | { ok: true; data: T }
-    | { ok: false; error: E };
+    | { ok: false; error: E }
+    | { ok: false; aborted: true };
 
 export const request = async <T>(
     url: string,
-    options: { method?: string; body?: unknown } = {}
+    options: { method?: string; body?: unknown; signal?: AbortSignal } = {}
 ): Promise<Result<T>> => {
     try {
         const response = await fetch(`${BASE_URL}${url}`, {
@@ -14,6 +15,7 @@ export const request = async <T>(
             headers: { "Content-Type": "application/json" },
             credentials: "include",
             body: options.body ? JSON.stringify(options.body) : undefined,
+            signal: options.signal
         });
 
         if (!response.ok) {
@@ -23,6 +25,10 @@ export const request = async <T>(
         const data = (await response.json()) as T;
         return { ok: true, data };
     } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") {
+            return { ok: false, aborted: true };
+        }
+
         return {
             ok: false,
             error: error instanceof Error ? error : new Error(String(error)),
