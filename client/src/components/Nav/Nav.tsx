@@ -1,4 +1,4 @@
-import { createContext, useContext, useId, useRef, useState, type ComponentProps, type KeyboardEvent, type ReactNode, type RefObject } from 'react'
+import { createContext, useContext, useId, useRef, useState, type ComponentProps, type ElementType, type KeyboardEvent, type MouseEvent, type ReactNode, type RefObject } from 'react'
 import useLineClamp from 'use-line-clamp'
 
 import { cx } from '../../utils/cx'
@@ -23,16 +23,19 @@ const idleClass = cx(
 
 type NavItemProps = ComponentProps<'a'> & {
   current?: boolean
+  as?: ElementType
+  to?: string
+  end?: boolean
 }
 
-export const NavItem = ({ current = false, className, onClick, ...props }: NavItemProps) => {
+export const NavItem = ({ current = false, className, onClick, as: Component = 'a', ...props }: NavItemProps) => {
   const closeMenu = useContext(NavMenuContext)
 
   return (
-    <a
+    <Component
       {...props}
       aria-current={current ? 'page' : undefined}
-      onClick={(event) => {
+      onClick={(event: MouseEvent<HTMLAnchorElement>) => {
         onClick?.(event)
         if (!event.defaultPrevented) closeMenu?.()
       }}
