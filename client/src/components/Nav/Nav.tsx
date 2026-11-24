@@ -74,7 +74,8 @@ export const TopBar = ({ wordmark, label, actions, className, children, onKeyDow
         aria-hidden
         className="pointer-events-none absolute inset-x-4 opacity-0"
       >
-        <span className="inline-flex items-center whitespace-nowrap text-title">{wordmark}</span><span className="ml-6 inline-flex items-center gap-2 whitespace-nowrap">{actions}<span className="inline-block size-9" /></span>
+        <span className="inline-flex items-center whitespace-nowrap text-title">{wordmark}</span>
+        <span className="ml-6 inline-flex items-center gap-2 whitespace-nowrap">{actions}<span className="inline-block size-9" /></span>
       </div>
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 px-4 @min-[42rem]:grid-cols-[auto_minmax(0,1fr)_auto]">
         <div className="text-title flex h-14 items-center">{wordmark}</div>
@@ -99,7 +100,7 @@ export const TopBar = ({ wordmark, label, actions, className, children, onKeyDow
           aria-label={label}
           data-open={open ? '' : undefined}
           className={cx(
-            'col-span-full -mx-4 hidden flex-col gap-1 border-t border-border px-4 py-3 [&_a]:w-full',
+            'col-span-full -mx-4 hidden flex-col justify-center gap-1 border-t border-border px-4 py-3 [&_a]:w-full',
             'data-open:flex',
             '@min-[42rem]:col-span-1 @min-[42rem]:col-start-2 @min-[42rem]:row-start-1 @min-[42rem]:mx-0 @min-[42rem]:flex @min-[42rem]:flex-row @min-[42rem]:items-center @min-[42rem]:border-0 @min-[42rem]:p-0 @min-[42rem]:[&_a]:w-auto',
           )}
