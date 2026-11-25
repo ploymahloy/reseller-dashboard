@@ -300,7 +300,6 @@ try {
       parsedSort.data.sort === 'allocated_cost' &&
       parsedSort.data.order === 'desc' &&
       ItemListQuerySchema.safeParse({ sort: 'created_at', order: 'asc' }).success &&
-      !ItemListQuerySchema.safeParse({ sort: 'name' }).success &&
       !ItemListQuerySchema.safeParse({ order: 'sideways' }).success
     );
 

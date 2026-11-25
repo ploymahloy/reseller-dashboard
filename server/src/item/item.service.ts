@@ -43,8 +43,30 @@ const sortItems = (query: typeof db.orm.public.Item, sort: ItemListQuery['sort']
       return query
         .orderBy((item) => direction(item.created_at, order))
         .orderBy((item) => direction(item.id, order));
-    case undefined:
-      return null;
+    case 'condition':
+      return query
+        .orderBy((item) => direction(item.condition, order))
+        .orderBy((item) => direction(item.id, order));
+    case 'name':
+      return query
+        .orderBy((item) => direction(item.name, order))
+        .orderBy((item) => direction(item.id, order));
+    case 'sku':
+      return query
+        .orderBy((item) => direction(item.sku, order))
+        .orderBy((item) => direction(item.id, order));
+    case 'status':
+      return query
+        .orderBy((item) => direction(item.status, order))
+        .orderBy((item) => direction(item.id, order));
+    case 'acquisition_id':
+      return query
+        .orderBy((item) => direction(item.acquisition_id, order))
+        .orderBy((item) => direction(item.id, order));
+    default:
+      return query
+        .orderBy((item) => direction(item.id, order))
+        .orderBy((item) => direction(item.created_at, order));
   }
 };
 

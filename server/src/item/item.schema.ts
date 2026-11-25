@@ -66,7 +66,7 @@ export const ItemFilterSchema = z.object({
 
 export type ItemFilter = z.infer<typeof ItemFilterSchema>;
 
-export const ItemSortField = z.enum(['allocated_cost', 'created_at']);
+export const ItemSortField = z.enum(['acquisition_id', 'allocated_cost', 'created_at', 'condition', 'name', 'sku', 'status']);
 export type ItemSortField = z.infer<typeof ItemSortField>;
 
 export const ItemSortOrder = z.enum(['asc', 'desc']);
