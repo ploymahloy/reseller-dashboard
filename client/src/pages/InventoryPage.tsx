@@ -2,6 +2,31 @@ import { useEffect, useState } from "react";
 
 import { request } from "../api/request";
 import { type Item, type ItemPage } from "../../../server/src/item/item.schema";
+import { Table, type Column } from "../components/Table/Table";
+
+const formatLabel = (value: string): string => {
+  return value
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+const formatCost = (cost: number): string => {
+  return cost.toLocaleString("en-US", { style: "currency", currency: "USD" });
+}
+
+const columns: Array<Column<Item>> = [
+  { id: "name", header: "Name", cell: (item) => item.name },
+  { id: "sku", header: "SKU", cell: (item) => item.sku },
+  {
+    id: "allocated_cost",
+    header: "Cost",
+    align: "right",
+    cell: (item) => formatCost(item.allocated_cost),
+  },
+  { id: "condition", header: "Condition", cell: (item) => formatLabel(item.condition) },
+  { id: "status", header: "Status", cell: (item) => formatLabel(item.status) },
+];
 
 export const InventoryPage = () => {
   // Data state
@@ -20,7 +45,6 @@ export const InventoryPage = () => {
 
     request<ItemPage>("/items", { signal: controller.signal }).then((result) => {
       if (!result.ok && "aborted" in result) {
-        setIsLoading(false);
         return;
       }
 
@@ -34,31 +58,22 @@ export const InventoryPage = () => {
       setPage(result.data.page);
       setPageSize(result.data.page_size);
       setTotalItems(result.data.total_items);
-      console.log(result.data);
+      setError(null);
+      setIsLoading(false);
     });
 
-    setIsLoading(false);
     return () => controller.abort();
   }, []);
 
-  const DynamicHeader = () => {
-    if (error) return <div className="text-red-500">{error.message}</div>;
-    if (isLoading) return <div className="text-center text-black">Loading...</div>;
-    if (!error && !isLoading) return <div className="text-center text-black">Current Inventory</div>;
-  }
+  const empty = isLoading ? "Loading…" : error ? error.message : "No items";
 
   return (
-    <div className="max-w-md space-y-3 px-6">
-      <div className="max-w-md space-y-3 text-left text-black font-bold text-2xl">
-        <DynamicHeader />
-      </div>
-      <ul>
-        {data.map((item) => (
-          <li key={item.id} className="border-b border-gray-200 py-2 text-black">
-            {item.name} - {item.sku} - {item.allocated_cost} - {item.condition} - {item.status}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Table
+      caption="Inventory"
+      columns={columns}
+      rows={data}
+      getRowKey={(item) => item.id}
+      empty={empty}
+    />
   );
-}
+};
