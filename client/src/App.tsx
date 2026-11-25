@@ -7,9 +7,9 @@ import { NotFoundPage } from "./pages/NotFoundPage";
 
 const AppLayout = () => {
   return (
-    <div className="flex min-h-svh flex-col">
+    <div className="flex min-h-svh w-full min-w-0 flex-col">
       <Navbar />
-      <main className="p-12 flex-1 bg-zinc-200">
+      <main className="min-w-0 flex-1 bg-zinc-200 p-4 sm:p-8 lg:p-12">
         <Outlet />
       </main>
     </div>
