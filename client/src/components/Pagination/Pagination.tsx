@@ -5,7 +5,7 @@ export type PaginationProps = {
   page: number
   pageSize: number
   totalItems: number
-  pageSizeOptions: number[]
+  pageSizeOptions?: number[]
   onPageChange: (page: number) => void
   onPageSizeChange: (pageSize: number) => void
 }
@@ -27,6 +27,7 @@ export const Pagination = ({
 }: PaginationProps) => {
   const previousDisabled = page <= 1 || totalItems === 0
   const nextDisabled = totalItems === 0 || page * pageSize >= totalItems
+  const pageSizeSelect = pageSizeOptions ?? [10, 25, 50]
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-4">
@@ -36,7 +37,7 @@ export const Pagination = ({
           value={String(pageSize)}
           onChange={(event) => onPageSizeChange(Number(event.target.value))}
         >
-          {pageSizeOptions.map((option) => (
+          {pageSizeSelect.map((option) => (
             <option key={option} value={option}>
               {option}
             </option>
