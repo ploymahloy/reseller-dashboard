@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { request } from "../api/request";
 import { type Item, type ItemPage } from "../../../server/src/item/item.schema";
-import { Table, type Column, type TableSort } from "../components/Table";
+import { Pagination, Table, type Column, type TableSort } from "../components";
 
 const formatLabel = (value: string): string => {
   return value
@@ -29,27 +29,6 @@ const columns: Array<Column<Item>> = [
   { id: "status", header: "Status", sortable: true, cell: (item) => formatLabel(item.status) },
 ];
 
-const compareText = (left: string, right: string): number => {
-  return left.localeCompare(right, undefined, { numeric: true, sensitivity: "base" });
-}
-
-const compareItems = (left: Item, right: Item, columnId: string): number => {
-  switch (columnId) {
-    case "name":
-      return compareText(left.name, right.name);
-    case "sku":
-      return compareText(left.sku, right.sku);
-    case "allocated_cost":
-      return left.allocated_cost - right.allocated_cost;
-    case "condition":
-      return compareText(formatLabel(left.condition), formatLabel(right.condition));
-    case "status":
-      return compareText(formatLabel(left.status), formatLabel(right.status));
-    default:
-      return 0;
-  }
-}
-
 const nextSort = (current: TableSort | undefined, columnId: string): TableSort | undefined => {
   if (current?.columnId !== columnId) return { columnId, order: "asc" };
   if (current.order === "asc") return { columnId, order: "desc" };
@@ -59,9 +38,9 @@ const nextSort = (current: TableSort | undefined, columnId: string): TableSort |
 export const InventoryPage = () => {
   // Data state
   const [data, setData] = useState<Item[]>([]);
-  const [_page, setPage] = useState(1);
-  const [_pageSize, setPageSize] = useState(10);
-  const [_totalItems, setTotalItems] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalItems, setTotalItems] = useState(0);
 
   // Request states
   const [isLoading, setIsLoading] = useState(true);
@@ -72,51 +51,63 @@ export const InventoryPage = () => {
     const controller = new AbortController();
     setIsLoading(true);
 
-    request<ItemPage>("/items", { signal: controller.signal }).then((result) => {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      page_size: pageSize.toString()
+    });
+    if (sort) {
+      params.set("sort", sort.columnId);
+      params.set("order", sort.order);
+    }
+
+    request<ItemPage>(`/items?${params}`, { signal: controller.signal }).then((result) => {
       if (!result.ok && "aborted" in result) {
         return;
       }
 
       if (!result.ok) {
+        setData([]);
+        setTotalItems(0);
         setError(result.error);
         setIsLoading(false);
         return;
       }
 
       setData(result.data.items);
-      setPage(result.data.page);
-      setPageSize(result.data.page_size);
       setTotalItems(result.data.total_items);
       setError(null);
       setIsLoading(false);
     });
 
     return () => controller.abort();
-  }, []);
+  }, [page, pageSize, sort]);
 
   const empty = isLoading ? "Loading…" : error ? error.message : "No items";
 
-  const rows = useMemo(() => {
-    if (!sort) return data;
-
-    return [...data].sort((left, right) => {
-      const compared = sort.order === "desc"
-        ? compareItems(right, left, sort.columnId)
-        : compareItems(left, right, sort.columnId);
-      if (compared !== 0) return compared;
-      return left.id - right.id;
-    });
-  }, [data, sort]);
-
   return (
-    <Table
-      caption="Inventory"
-      columns={columns}
-      empty={empty}
-      getRowKey={(item) => item.id}
-      rows={rows}
-      sort={sort}
-      onSort={(columnId) => setSort((current) => nextSort(current, columnId))}
-    />
+    <>
+      <Table
+        caption="Inventory"
+        columns={columns}
+        empty={empty}
+        getRowKey={(item) => item.id}
+        rows={data}
+        sort={sort}
+        onSort={(columnId) => {
+          setSort((current) => nextSort(current, columnId));
+          setPage(1);
+        }}
+      />
+      <Pagination
+        page={page}
+        pageSize={pageSize}
+        totalItems={totalItems}
+        onPageChange={(page) => setPage(page)}
+        onPageSizeChange={(nextPageSize) => {
+          setPageSize(nextPageSize);
+          setPage(1);
+        }}
+      />
+    </>
   );
 };
