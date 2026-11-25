@@ -82,7 +82,7 @@ export const InventoryPage = () => {
     return () => controller.abort();
   }, [page, pageSize, sort]);
 
-  const empty = isLoading ? "Loading…" : error ? error.message : "No items";
+  const empty = isLoading ? "Loading…" : error ? "An error occurred while loading the items. Please try again." : "No items";
 
   return (
     <>
