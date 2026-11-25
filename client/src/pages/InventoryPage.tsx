@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { type JSX, useEffect, useState } from "react";
 
 import { request } from "../api/request";
 import { type Item, type ItemPage } from "../../../server/src/item/item.schema";
 import { Pagination, Table, type Column, type TableSort } from "../components";
+import { Icon, SpinnerIcon } from "../components/Icon";
 
 const formatLabel = (value: string): string => {
   return value
@@ -82,14 +83,21 @@ export const InventoryPage = () => {
     return () => controller.abort();
   }, [page, pageSize, sort]);
 
-  const empty = isLoading ? "Loading…" : error ? "An error occurred while loading the items. Please try again." : "No items";
+  const spinnerOrMessage: JSX.Element =
+    isLoading
+      ? (<Icon size="xl">
+        <SpinnerIcon />
+      </Icon>)
+      : error
+        ? <p>An error occurred while loading the items. Please refresh the page.</p>
+        : <p>No items</p>;
 
   return (
     <>
       <Table
         caption="Inventory"
         columns={columns}
-        empty={empty}
+        empty={spinnerOrMessage}
         getRowKey={(item) => item.id}
         rows={data}
         sort={sort}
