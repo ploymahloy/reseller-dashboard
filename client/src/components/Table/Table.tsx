@@ -42,9 +42,9 @@ export const Table = <Row,>({
   onSort,
 }: TableProps<Row>) => {
   return (
-    <div className="overflow-x-auto rounded-lg border border-border bg-surface">
+    <div className="overflow-x-auto p-8 rounded-lg border border-border bg-surface">
       <table className="w-full border-collapse font-sans text-body text-fg">
-        <caption className="caption-top px-4 py-3 text-left text-title">{caption}</caption>
+        <caption className="caption-top px-4 py-3 text-center text-heading">{caption}</caption>
         <thead>
           <tr className="border-b border-border text-label text-fg-muted">
             {columns.map((column) => {

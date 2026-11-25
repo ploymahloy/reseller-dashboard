@@ -9,7 +9,7 @@ const AppLayout = () => {
   return (
     <div className="flex min-h-svh flex-col">
       <Navbar />
-      <main className="flex flex-1 items-center justify-center bg-zinc-200 text-zinc-100">
+      <main className="p-12 flex-1 bg-zinc-200">
         <Outlet />
       </main>
     </div>
