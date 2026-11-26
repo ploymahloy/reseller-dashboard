@@ -62,7 +62,7 @@ export const Table = <Row,>({
     : ''
 
   return (
-    <div className="@container w-full min-w-0 max-w-full rounded-lg border border-border bg-surface p-4 @min-[48rem]:p-8">
+    <div className="@container w-full min-w-0 max-w-full rounded-lg bg-surface @min-[48rem]:p-8">
       <div className="flex items-center justify-between gap-4">
         <h1 id={captionId} className="m-0 py-3 text-left text-heading @min-[48rem]:px-4">
           {caption}
@@ -145,7 +145,7 @@ export const Table = <Row,>({
               <tr
                 key={getRowKey(row)}
                 role="row"
-                className="block border-b border-border py-1 last:border-b-0 @min-[48rem]:table-row @min-[48rem]:py-0"
+                className="block border-b border-border py-1 @min-[48rem]:table-row @min-[48rem]:py-0"
               >
                 {columns.map((column) => (
                   <td

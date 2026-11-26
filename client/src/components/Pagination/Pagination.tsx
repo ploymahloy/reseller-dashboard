@@ -30,7 +30,7 @@ export const Pagination = ({
   const pageSizeSelect = pageSizeOptions ?? [10, 25, 50]
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="flex flex-wrap items-center justify-between gap-4 pt-3 px-3">
       <div className="w-40">
         <Select
           label="Rows per page"

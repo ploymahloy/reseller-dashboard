@@ -86,7 +86,7 @@ export const InventoryPage = () => {
         : <p>No items</p>;
 
   return (
-    <>
+    <div className="bg-white rounded-lg p-4">
       <Table
         caption="Inventory"
         columns={columns}
@@ -109,6 +109,6 @@ export const InventoryPage = () => {
           setPage(1);
         }}
       />
-    </>
+    </div>
   );
 };
