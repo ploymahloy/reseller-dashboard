@@ -63,8 +63,8 @@ export const Table = <Row,>({
 
   return (
     <div className="@container w-full min-w-0 max-w-full rounded-lg bg-surface @min-[48rem]:p-8">
-      <div className="flex items-center justify-between gap-4">
-        <h1 id={captionId} className="m-0 py-3 text-left text-heading @min-[48rem]:px-4">
+      <div className="sm:flex items-center justify-between gap-4">
+        <h1 id={captionId} className="m-0 py-3 text-center sm:text-left text-heading @min-[48rem]:px-4">
           {caption}
         </h1>
         <div className="relative">
