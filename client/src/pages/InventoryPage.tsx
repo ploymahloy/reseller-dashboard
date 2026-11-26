@@ -17,24 +17,12 @@ const formatCost = (cost: number): string => {
 }
 
 const columns: Array<Column<Item>> = [
-  { id: "name", header: "Name", sortable: true, cell: (item) => item.name },
-  { id: "sku", header: "SKU", sortable: true, cell: (item) => item.sku },
-  {
-    id: "allocated_cost",
-    header: "Cost",
-    align: "right",
-    sortable: true,
-    cell: (item) => formatCost(item.allocated_cost),
-  },
-  { id: "condition", header: "Condition", sortable: true, cell: (item) => formatLabel(item.condition) },
-  { id: "status", header: "Status", sortable: true, cell: (item) => formatLabel(item.status) },
+  { id: "name", header: "Name", cell: (item) => item.name },
+  { id: "sku", header: "SKU", cell: (item) => item.sku },
+  { id: "allocated_cost", header: "Cost", align: "right", cell: (item) => formatCost(item.allocated_cost) },
+  { id: "condition", header: "Condition", cell: (item) => formatLabel(item.condition) },
+  { id: "status", header: "Status", cell: (item) => formatLabel(item.status) },
 ];
-
-const nextSort = (current: TableSort | undefined, columnId: string): TableSort | undefined => {
-  if (current?.columnId !== columnId) return { columnId, order: "asc" };
-  if (current.order === "asc") return { columnId, order: "desc" };
-  return undefined;
-}
 
 export const InventoryPage = () => {
   // Data state
@@ -85,9 +73,14 @@ export const InventoryPage = () => {
 
   const spinnerOrMessage: JSX.Element =
     isLoading
-      ? (<Icon size="xl">
-        <SpinnerIcon />
-      </Icon>)
+      ? (
+        <>
+          <Icon size="xl">
+            <SpinnerIcon />
+          </Icon>
+          <span className="sr-only">Loading</span>
+        </>
+      )
       : error
         ? <p>An error occurred while loading the items. Please refresh the page.</p>
         : <p>No items</p>;
@@ -101,8 +94,8 @@ export const InventoryPage = () => {
         getRowKey={(item) => item.id}
         rows={data}
         sort={sort}
-        onSort={(columnId) => {
-          setSort((current) => nextSort(current, columnId));
+        onSort={({ columnId, order }) => {
+          setSort({ columnId, order });
           setPage(1);
         }}
       />

@@ -25,7 +25,6 @@ const columns: Array<Column<SampleRow>> = [
     id: 'cost',
     header: 'Cost',
     align: 'right',
-    sortable: true,
     cell: (row) => formatCost(row.cost),
   },
 ]
@@ -72,14 +71,7 @@ const PopulatedTable = () => {
       rows={rows}
       getRowKey={(row) => row.id}
       sort={sort}
-      onSort={(columnId) => {
-        setSort((current) => {
-          if (current?.columnId === columnId && current.order === 'asc') {
-            return { columnId, order: 'desc' }
-          }
-          return { columnId, order: 'asc' }
-        })
-      }}
+      onSort={setSort}
     />
   )
 }

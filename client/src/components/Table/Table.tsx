@@ -1,20 +1,20 @@
-import type { ReactNode } from 'react'
+import { useId, type ReactNode } from 'react'
 
+import { ItemSortOrder } from '../../../../server/src/item/item.schema'
 import { cx } from '../../utils/cx'
 import { ChevronDownIcon, Icon } from '../Icon'
-import { focusRing } from '../styles'
+import { controlClass } from '../styles'
 
 export type Column<Row> = {
   id: string
   header: ReactNode
   cell: (row: Row) => ReactNode
   align?: 'left' | 'right'
-  sortable?: boolean
 }
 
 export type TableSort = {
   columnId: string
-  order: 'asc' | 'desc'
+  order: ItemSortOrder
 }
 
 export type TableProps<Row> = {
@@ -24,42 +24,25 @@ export type TableProps<Row> = {
   caption: ReactNode
   empty?: ReactNode
   sort?: TableSort
-  onSort?: (columnId: string) => void
+  onSort?: (sort: TableSort) => void
 }
+
+const sortOptionValue = (columnId: string, order: ItemSortOrder): string => `${columnId}:${order}`
+
+const sortFromOption = (value: string): TableSort | undefined => {
+  const splitAt = value.lastIndexOf(':')
+  if (splitAt <= 0) return undefined
+  const columnId = value.slice(0, splitAt)
+  const order = ItemSortOrder.safeParse(value.slice(splitAt + 1))
+  if (!order.success) return undefined
+  return { columnId, order: order.data }
+}
+
+const columnLabel = (header: ReactNode, id: string): string => (typeof header === 'string' ? header : id)
 
 const ariaSortFor = (columnId: string, sort: TableSort | undefined): 'ascending' | 'descending' | 'none' => {
   if (sort?.columnId !== columnId) return 'none'
   return sort.order === 'asc' ? 'ascending' : 'descending'
-}
-
-const SortButton = <Row,>({
-  column,
-  sort,
-  onSort,
-}: {
-  column: Column<Row>
-  sort?: TableSort
-  onSort?: (columnId: string) => void
-}) => {
-  const sorted = sort?.columnId === column.id ? sort : undefined
-
-  return (
-    <button
-      type="button"
-      onClick={() => onSort?.(column.id)}
-      className={cx(
-        'inline-flex cursor-pointer items-center gap-1 rounded-md text-label text-fg-muted hover:text-fg',
-        focusRing,
-      )}
-    >
-      {column.header}
-      {sorted ? (
-        <Icon size="sm" className={sorted.order === 'asc' ? 'rotate-180' : undefined}>
-          <ChevronDownIcon />
-        </Icon>
-      ) : null}
-    </button>
-  )
 }
 
 export const Table = <Row,>({
@@ -69,56 +52,89 @@ export const Table = <Row,>({
   caption,
   empty = 'No results',
   sort,
-  onSort,
+  onSort = () => { }
 }: TableProps<Row>) => {
-  const sortable = columns.filter((column) => column.sortable)
+  const captionId = useId()
+  const sortId = useId()
+  const sortedColumn = columns.find((column) => column.id === sort?.columnId)
+  const sortStatus = sort
+    ? `Sorted by ${columnLabel(sortedColumn?.header ?? sort.columnId, sort.columnId)}, ${sort.order === 'asc' ? 'ascending' : 'descending'}`
+    : ''
 
   return (
     <div className="@container w-full min-w-0 max-w-full rounded-lg border border-border bg-surface p-4 @min-[48rem]:p-8">
-      <table className="block w-full font-sans text-body text-fg @min-[48rem]:table @min-[48rem]:border-collapse">
-        <caption className="caption-top block py-3 text-center text-heading @min-[48rem]:table-caption @min-[48rem]:px-4">
+      <div className="flex items-center justify-between gap-4">
+        <h1 id={captionId} className="m-0 py-3 text-left text-heading @min-[48rem]:px-4">
           {caption}
-        </caption>
-        <thead className="block @min-[48rem]:table-header-group">
-          {sortable.length > 0 ? (
-            <tr className="block @min-[48rem]:hidden">
-              <td colSpan={columns.length} className="block px-0 pb-3">
-                <div className="flex flex-wrap gap-2" role="group" aria-label="Sort">
-                  {sortable.map((column) => (
-                    <div key={column.id} role="columnheader" aria-sort={ariaSortFor(column.id, sort)}>
-                      <SortButton column={column} sort={sort} onSort={onSort} />
-                    </div>
-                  ))}
-                </div>
-              </td>
-            </tr>
-          ) : null}
-          <tr className="hidden border-b border-border text-label text-fg-muted @min-[48rem]:table-row">
+        </h1>
+        <div className="relative">
+          <select
+            id={sortId}
+            aria-label="Sort"
+            className={cx(controlClass, 'h-9 w-auto appearance-none py-0 pr-9 pl-3')}
+            value={sort ? sortOptionValue(sort.columnId, sort.order) : ''}
+            onChange={(event) => {
+              const next = sortFromOption(event.target.value)
+              if (next) onSort(next)
+            }}
+          >
+            <option value="" disabled>
+              Sort
+            </option>
+            {columns.flatMap((column) => {
+              const label = columnLabel(column.header, column.id)
+              return ItemSortOrder.options.map((order) => (
+                <option key={sortOptionValue(column.id, order)} value={sortOptionValue(column.id, order)}>
+                  {`${label} ${order === 'asc' ? 'ascending' : 'descending'}`}
+                </option>
+              ))
+            })}
+          </select>
+          <Icon
+            size="sm"
+            className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 text-fg-muted"
+          >
+            <ChevronDownIcon />
+          </Icon>
+        </div>
+      </div>
+      <p className="sr-only" aria-live="polite">
+        {sortStatus}
+      </p>
+      <table
+        role="table"
+        aria-labelledby={captionId}
+        className="block w-full font-sans text-body text-fg @min-[48rem]:table @min-[48rem]:border-collapse"
+      >
+        <thead role="rowgroup" className="block @min-[48rem]:table-header-group">
+          <tr
+            role="row"
+            className="sr-only border-b border-border text-label text-fg-muted @min-[48rem]:not-sr-only @min-[48rem]:table-row"
+          >
             {columns.map((column) => {
               const alignRight = column.align === 'right'
-
               return (
                 <th
                   key={column.id}
+                  role="columnheader"
                   scope="col"
                   aria-sort={ariaSortFor(column.id, sort)}
                   className={cx('px-4 py-3', alignRight ? 'text-right tabular-nums' : 'text-left')}
                 >
-                  {column.sortable ? (
-                    <SortButton column={column} sort={sort} onSort={onSort} />
-                  ) : (
-                    column.header
-                  )}
+                  <span>{column.header}</span>
                 </th>
               )
             })}
           </tr>
         </thead>
-        <tbody className="block @min-[48rem]:table-row-group">
+        <tbody role="rowgroup" className="block @min-[48rem]:table-row-group">
           {rows.length === 0 ? (
-            <tr className="block @min-[48rem]:table-row">
+            <tr role="row" className="block @min-[48rem]:table-row">
               <td
+                role="cell"
                 colSpan={columns.length}
+                aria-colspan={columns.length}
+                aria-live="polite"
                 className="block px-0 py-6 text-center text-fg-muted @min-[48rem]:table-cell @min-[48rem]:px-4"
               >
                 {empty}
@@ -128,11 +144,13 @@ export const Table = <Row,>({
             rows.map((row) => (
               <tr
                 key={getRowKey(row)}
+                role="row"
                 className="block border-b border-border py-1 last:border-b-0 @min-[48rem]:table-row @min-[48rem]:py-0"
               >
                 {columns.map((column) => (
                   <td
                     key={column.id}
+                    role="cell"
                     className={cx(
                       'flex min-w-0 items-baseline justify-between gap-3 py-2',
                       '@min-[48rem]:table-cell @min-[48rem]:px-4 @min-[48rem]:py-3',
@@ -141,12 +159,15 @@ export const Table = <Row,>({
                         : '@min-[48rem]:text-left',
                     )}
                   >
-                    <span className="min-w-0 text-label text-fg-muted wrap-break-word @min-[48rem]:hidden">
+                    <span
+                      aria-hidden="true"
+                      className="min-w-0 text-label text-fg-muted wrap-break-word @min-[48rem]:hidden"
+                    >
                       {column.header}
                     </span>
                     <span
                       className={cx(
-                        'min-w-0 wrap-break-word @min-[48rem]:contents',
+                        'min-w-0 wrap-break-word',
                         column.align === 'right' ? 'text-right tabular-nums' : 'text-left',
                       )}
                     >
