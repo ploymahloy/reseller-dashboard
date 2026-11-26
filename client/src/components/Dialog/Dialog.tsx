@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useId, useRef, type ComponentProps, type MouseEvent, type ReactNode } from 'react'
-import { cx } from '../../utils/cx'
-import { Button } from '../Button'
-import { CloseIcon, Icon } from '../Icon'
+import { cx } from '@/utils/cx'
+import { Button } from '@/components/Button'
+import { CloseIcon, Icon } from '@/components/Icon'
 
 type DialogContextValue = {
   titleId: string

@@ -1,5 +1,5 @@
-import { Button } from '../Button'
-import { Select } from '../Select'
+import { Button } from '@/components/Button'
+import { Select } from '@/components/Select'
 
 export type PaginationProps = {
   page: number

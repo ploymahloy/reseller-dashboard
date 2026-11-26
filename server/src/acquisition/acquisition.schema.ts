@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-import { CreateItemRequest } from '../item/item.schema.js';
-import { JsonPrimitiveSchema, SafeCoercedDateSchema } from '../shared/schema.js';
-import { SupplierName } from '../supplier/supplier.schema.js';
+import { CreateItemRequest } from '@/item/item.schema.js';
+import { JsonPrimitiveSchema, SafeCoercedDateSchema } from '@/shared/schema.js';
+import { SupplierName } from '@/supplier/supplier.schema.js';
 
 export const ManifestRowSchema = z.record(z.string().min(1), JsonPrimitiveSchema.optional());
 export const ManifestJsonbSchema = z.array(ManifestRowSchema).min(1);

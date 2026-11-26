@@ -1,9 +1,9 @@
 import { useId, type ComponentProps, type ReactNode } from 'react'
-import { describedBy } from '../../utils/describedBy'
-import { cx } from '../../utils/cx'
-import { Field, FieldMessages, RequiredMark } from '../Field'
-import { CheckIcon, Icon } from '../Icon'
-import { focusRing } from '../styles'
+import { describedBy } from '@/utils/describedBy'
+import { cx } from '@/utils/cx'
+import { Field, FieldMessages, RequiredMark } from '@/components/Field'
+import { CheckIcon, Icon } from '@/components/Icon'
+import { focusRing } from '@/components/styles'
 
 const boxClass = cx(
   'peer size-4 shrink-0 cursor-pointer appearance-none rounded-sm border border-border bg-surface',

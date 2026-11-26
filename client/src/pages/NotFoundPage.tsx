@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Button } from "../components";
+import { Button } from "@/components";
 
 export const NotFoundPage = () => {
     return (

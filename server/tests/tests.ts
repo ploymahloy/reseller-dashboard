@@ -1,15 +1,15 @@
 import { SqlQueryError } from '@prisma/orm-family-sql/errors';
 
-import { createAcquisition } from '../src/acquisition/acquisition.service.js';
-import { ItemListQuerySchema, UpdateItemRequestSchema } from '../src/item/item.schema.js';
-import { getItemQuantities, getItems, updateItem } from '../src/item/item.service.js';
-import { db, type Tx } from '../src/prisma/db.js';
+import { createAcquisition } from '@/acquisition/acquisition.service.js';
+import { ItemListQuerySchema, UpdateItemRequestSchema } from '@/item/item.schema.js';
+import { getItemQuantities, getItems, updateItem } from '@/item/item.service.js';
+import { db, type Tx } from '@/prisma/db.js';
 import {
   createSupplier,
   getSupplierName,
   isSupplierNotFoundError,
   listSupplierNames
-} from '../src/supplier/supplier.service.js';
+} from '@/supplier/supplier.service.js';
 
 class RollbackCheck extends Error {
   constructor() {

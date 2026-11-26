@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { ThemePanels } from '../../tokens/ThemePanels'
+import { ThemePanels } from '@/tokens/ThemePanels'
 import { TextField } from './TextField'
 
 const meta = {

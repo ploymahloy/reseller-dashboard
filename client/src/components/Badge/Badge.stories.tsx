@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { ThemePanels } from '../../tokens/ThemePanels'
+import { ThemePanels } from '@/tokens/ThemePanels'
 import { Badge, type BadgeVariant } from './Badge'
 
 const badgeVariants = ['neutral', 'success', 'warning', 'error', 'info'] as const satisfies readonly BadgeVariant[]

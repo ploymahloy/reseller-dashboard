@@ -1,7 +1,7 @@
 import type { ComponentProps } from 'react'
-import { cx } from '../../utils/cx'
-import { Icon, SpinnerIcon } from '../Icon'
-import { focusRing } from '../styles'
+import { cx } from '@/utils/cx'
+import { Icon, SpinnerIcon } from '@/components/Icon'
+import { focusRing } from '@/components/styles'
 
 const variants = {
   primary: cx(

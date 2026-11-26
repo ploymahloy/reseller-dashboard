@@ -1,6 +1,6 @@
 import { createContext, useContext, useId, useState, type ComponentProps, type KeyboardEvent, type ReactNode } from 'react'
-import { cx } from '../../utils/cx'
-import { focusRing } from '../styles'
+import { cx } from '@/utils/cx'
+import { focusRing } from '@/components/styles'
 
 type TabsContextValue = {
   value: string

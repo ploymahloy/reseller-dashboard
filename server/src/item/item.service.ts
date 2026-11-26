@@ -1,4 +1,4 @@
-import { db } from '../prisma/db.js';
+import { db } from '@/prisma/db.js';
 
 import {
   type Item,
@@ -10,7 +10,7 @@ import {
   type ItemSortOrder,
   type ItemQuantitySortField
 } from './item.schema.js';
-import { asMoney } from '../shared/utils.js';
+import { asMoney } from '@/shared/utils.js';
 
 const DEFAULT_PAGE_SIZE = 50;
 const MAX_PAGE_SIZE = 100;

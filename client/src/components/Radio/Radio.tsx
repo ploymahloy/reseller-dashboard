@@ -1,7 +1,7 @@
 import { createContext, useContext, useId, type ComponentProps, type ReactNode } from 'react'
-import { describedBy } from '../../utils/describedBy'
-import { cx } from '../../utils/cx'
-import { Field, FieldMessages, RequiredMark } from '../Field'
+import { describedBy } from '@/utils/describedBy'
+import { cx } from '@/utils/cx'
+import { Field, FieldMessages, RequiredMark } from '@/components/Field'
 
 type RadioContextValue = {
   name: string

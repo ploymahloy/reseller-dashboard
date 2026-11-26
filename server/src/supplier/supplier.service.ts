@@ -1,4 +1,4 @@
-import { db, type Tx } from '../prisma/db.js';
+import { db, type Tx } from '@/prisma/db.js';
 import type { CreateSupplierRequest, Supplier } from './supplier.schema.js';
 
 const supplierNotFoundMessage = 'Supplier does not exist.';

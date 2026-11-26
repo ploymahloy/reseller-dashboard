@@ -1,7 +1,7 @@
 import { useId, type ComponentProps, type ReactNode } from 'react'
-import { describedBy } from '../../utils/describedBy'
-import { cx } from '../../utils/cx'
-import { Field, FieldMessages, RequiredMark } from '../Field'
+import { describedBy } from '@/utils/describedBy'
+import { cx } from '@/utils/cx'
+import { Field, FieldMessages, RequiredMark } from '@/components/Field'
 
 const trackClass = cx(
   'pointer-events-none block h-5 w-9 shrink-0 rounded-full bg-neutral-300 p-0.5 transition-colors',

@@ -1,5 +1,5 @@
 import type { ComponentProps, ReactNode } from 'react'
-import { cx } from '../../utils/cx'
+import { cx } from '@/utils/cx'
 
 export const Field = ({ className, ...props }: ComponentProps<'div'>) => {
   return <div className={cx('flex w-full min-w-0 flex-col gap-1 font-sans', className)} {...props} />

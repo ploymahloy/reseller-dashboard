@@ -1,5 +1,5 @@
 import type { SVGProps } from 'react'
-import { cx } from '../../utils/cx'
+import { cx } from '@/utils/cx'
 
 type IconSvgProps = SVGProps<SVGSVGElement>
 

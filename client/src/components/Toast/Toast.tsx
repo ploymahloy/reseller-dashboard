@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import { cx } from '../../utils/cx'
-import { Alert, type AlertVariant } from '../Alert'
+import { cx } from '@/utils/cx'
+import { Alert, type AlertVariant } from '@/components/Alert'
 
 type ToastProps = {
   open: boolean

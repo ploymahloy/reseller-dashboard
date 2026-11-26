@@ -1,10 +1,10 @@
 import { createContext, useContext, useId, useRef, useState, type ComponentProps, type ElementType, type KeyboardEvent, type MouseEvent, type ReactNode, type RefObject } from 'react'
 import useLineClamp from 'use-line-clamp'
 
-import { cx } from '../../utils/cx'
-import { Button } from '../Button'
-import { CloseIcon, Icon, MenuIcon } from '../Icon'
-import { focusRing } from '../styles'
+import { cx } from '@/utils/cx'
+import { Button } from '@/components/Button'
+import { CloseIcon, Icon, MenuIcon } from '@/components/Icon'
+import { focusRing } from '@/components/styles'
 
 const NavMenuContext = createContext<(() => void) | null>(null)
 

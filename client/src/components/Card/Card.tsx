@@ -1,5 +1,5 @@
 import type { ComponentProps } from 'react'
-import { cx } from '../../utils/cx'
+import { cx } from '@/utils/cx'
 
 export const Card = ({ className, ...props }: ComponentProps<'div'>) => {
   return (

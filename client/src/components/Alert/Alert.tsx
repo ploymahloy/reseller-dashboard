@@ -1,7 +1,7 @@
 import type { ComponentProps, ReactNode } from 'react'
-import { cx } from '../../utils/cx'
-import { Button } from '../Button'
-import { CloseIcon, Icon } from '../Icon'
+import { cx } from '@/utils/cx'
+import { Button } from '@/components/Button'
+import { CloseIcon, Icon } from '@/components/Icon'
 
 const variants = {
   neutral: 'bg-neutral-500/15 text-fg',

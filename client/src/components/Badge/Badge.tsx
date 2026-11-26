@@ -1,5 +1,5 @@
 import type { ComponentProps, ReactNode } from 'react'
-import { cx } from '../../utils/cx'
+import { cx } from '@/utils/cx'
 
 const variants = {
   neutral: 'bg-neutral-500/15 text-fg',

@@ -1,8 +1,8 @@
 import { useId, type ComponentProps, type ReactNode } from 'react'
-import { describedBy } from '../../utils/describedBy'
-import { cx } from '../../utils/cx'
-import { Field, FieldLabel, FieldMessages } from '../Field'
-import { controlClass } from '../styles'
+import { describedBy } from '@/utils/describedBy'
+import { cx } from '@/utils/cx'
+import { Field, FieldLabel, FieldMessages } from '@/components/Field'
+import { controlClass } from '@/components/styles'
 
 type TextFieldProps = ComponentProps<'input'> & {
   label: ReactNode

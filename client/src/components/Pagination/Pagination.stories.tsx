@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { ThemePanels } from '../../tokens/ThemePanels'
+import { ThemePanels } from '@/tokens/ThemePanels'
 import { Pagination } from './Pagination'
 
 const pageSizeOptions = [10, 25, 50]

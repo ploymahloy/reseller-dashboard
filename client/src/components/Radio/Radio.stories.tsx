@@ -1,6 +1,6 @@
 import { useId } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { ThemePanels } from '../../tokens/ThemePanels'
+import { ThemePanels } from '@/tokens/ThemePanels'
 import { Radio, RadioGroup } from './Radio'
 
 const meta = {

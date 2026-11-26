@@ -1,9 +1,9 @@
 import { type JSX, useEffect, useState } from "react";
 
-import { request } from "../api/request";
-import { type Item, type ItemPage } from "../../../server/src/item/item.schema";
-import { Pagination, Table, type Column, type TableSort } from "../components";
-import { Icon, SpinnerIcon } from "../components/Icon";
+import { request } from "@/api/request";
+import { type Item, type ItemPage } from "@server/item/item.schema";
+import { Pagination, Table, type Column, type TableSort } from "@/components";
+import { Icon, SpinnerIcon } from "@/components/Icon";
 
 const formatLabel = (value: string): string => {
   return value

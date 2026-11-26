@@ -1,6 +1,6 @@
 import type { JSX, ReactNode } from "react";
 import { NavLink, useMatch } from "react-router";
-import { Button, Icon, NavItem, PlusIcon, TopBar } from "../components";
+import { Button, Icon, NavItem, PlusIcon, TopBar } from "@/components";
 
 const actionButton: JSX.Element = (
     <Button>

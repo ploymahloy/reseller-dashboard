@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { ThemePanels } from '../../tokens/ThemePanels'
+import { ThemePanels } from '@/tokens/ThemePanels'
 import { Table, type Column, type TableProps, type TableSort } from './Table'
 
 type SampleRow = {

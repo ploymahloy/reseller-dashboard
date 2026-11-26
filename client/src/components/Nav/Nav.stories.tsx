@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { ThemePanels } from '../../tokens/ThemePanels'
-import { Button } from '../Button'
+import { ThemePanels } from '@/tokens/ThemePanels'
+import { Button } from '@/components/Button'
 import { NavItem, Sidebar, TopBar } from './Nav'
 
 const meta = {

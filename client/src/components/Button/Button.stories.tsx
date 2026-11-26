@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ComponentProps } from 'react'
-import { ThemePanels } from '../../tokens/ThemePanels'
+import { ThemePanels } from '@/tokens/ThemePanels'
 import { Button, type ButtonVariant } from './Button'
-import { Icon, PlusIcon } from '../Icon'
+import { Icon, PlusIcon } from '@/components/Icon'
 
 const meta = {
   title: 'Components/Button',

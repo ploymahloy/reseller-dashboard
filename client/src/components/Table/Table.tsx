@@ -1,9 +1,9 @@
 import { useId, type ReactNode } from 'react'
 
-import { ItemSortOrder } from '../../../../server/src/item/item.schema'
-import { cx } from '../../utils/cx'
-import { ChevronDownIcon, Icon } from '../Icon'
-import { controlClass } from '../styles'
+import { ItemSortOrder } from '@server/item/item.schema'
+import { cx } from '@/utils/cx'
+import { ChevronDownIcon, Icon } from '@/components/Icon'
+import { controlClass } from '@/components/styles'
 
 export type Column<Row> = {
   id: string

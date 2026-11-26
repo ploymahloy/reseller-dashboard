@@ -12,6 +12,13 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: {
+      // Keep in sync with paths in tsconfig.app.json.
+      '@': path.join(dirname, 'src'),
+      '@server': path.join(dirname, '../server/src'),
+    },
+  },
   test: {
     projects: [
       {

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import productImage from './camera.jpg'
-import { ThemePanels } from '../../tokens/ThemePanels'
-import { Button } from '../Button'
+import { ThemePanels } from '@/tokens/ThemePanels'
+import { Button } from '@/components/Button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardImage, CardTitle } from './Card'
 
 const meta = {
