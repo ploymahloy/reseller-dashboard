@@ -18,10 +18,10 @@ const formatCost = (cost: number): string => {
 
 const columns: Array<Column<Item>> = [
   { id: "name", header: "Name", cell: (item) => item.name },
-  { id: "sku", header: "SKU", cell: (item) => item.sku },
-  { id: "allocated_cost", header: "Cost", align: "right", cell: (item) => formatCost(item.allocated_cost) },
-  { id: "condition", header: "Condition", cell: (item) => formatLabel(item.condition) },
-  { id: "status", header: "Status", cell: (item) => formatLabel(item.status) },
+  { id: "sku", header: "SKU", width: "18%", cell: (item) => item.sku },
+  { id: "allocated_cost", header: "Cost", align: "right", width: "8.5rem", cell: (item) => formatCost(item.allocated_cost) },
+  { id: "condition", header: "Condition", width: "10rem", cell: (item) => formatLabel(item.condition) },
+  { id: "status", header: "Status", width: "11rem", cell: (item) => formatLabel(item.status) },
 ];
 
 export const InventoryPage = () => {

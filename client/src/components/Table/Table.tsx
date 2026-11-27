@@ -10,6 +10,7 @@ export type Column<Row> = {
   header: ReactNode
   cell: (row: Row) => ReactNode
   align?: 'left' | 'right'
+  width?: string
 }
 
 export type TableSort = {
@@ -104,8 +105,13 @@ export const Table = <Row,>({
       <table
         role="table"
         aria-labelledby={captionId}
-        className="block w-full font-sans text-body text-fg @min-[48rem]:table @min-[48rem]:border-collapse"
+        className="block w-full font-sans text-body text-fg @min-[48rem]:table @min-[48rem]:table-fixed @min-[48rem]:border-collapse"
       >
+        <colgroup className="hidden @min-[48rem]:table-column-group">
+          {columns.map((column) => (
+            <col key={column.id} style={{ width: column.width }} />
+          ))}
+        </colgroup>
         <thead role="rowgroup" className="block @min-[48rem]:table-header-group">
           <tr
             role="row"
