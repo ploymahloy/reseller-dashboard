@@ -20,6 +20,29 @@ export const ItemStatus = z.enum([
 
 export type ItemStatus = z.infer<typeof ItemStatus>;
 
+export const ItemStatusLabel: Record<z.infer<typeof ItemStatus>, string> = {
+  purchased: "Purchased",
+  inspecting: "Inspecting",
+  prep_required: "Prep Required",
+  ready_to_list: "Ready to List",
+  listed: "Listed",
+  sold: "Sold",
+  shipped: "Shipped",
+  completed: "Completed",
+  returned: "Returned",
+  unlisted: "Unlisted",
+  scrapped: "Scrapped"
+} as const;
+
+export const ItemConditionLabel: Record<z.infer<typeof ItemCondition>, string> = {
+  new: "New",
+  like_new: "Like New",
+  refurbished: "Refurbished",
+  used_good: "Used Good",
+  used_fair: "Used Fair",
+  salvage: "Salvage"
+} as const;
+
 export const ItemSchema = z.object({
   id: z.number(),
   acquisition_id: z.number(),
@@ -66,7 +89,7 @@ export const ItemFilterSchema = z.object({
 
 export type ItemFilter = z.infer<typeof ItemFilterSchema>;
 
-export const ItemSortField = z.enum(['acquisition_id', 'allocated_cost', 'created_at', 'condition', 'name', 'sku', 'status']);
+export const ItemSortField = ItemSchema.keyof();
 export type ItemSortField = z.infer<typeof ItemSortField>;
 
 export const ItemSortOrder = z.enum(['asc', 'desc']);
