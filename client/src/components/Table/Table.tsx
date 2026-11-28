@@ -5,17 +5,27 @@ import { cx } from '@/utils/cx'
 import { ChevronDownIcon, Icon } from '@/components/Icon'
 import { controlClass } from '@/components/styles'
 
+export type ColumnFilter =
+  | { type: 'select'; options: ReadonlyArray<{ value: string; label: string }> }
+  | { type: 'text' }
+
 export type Column<Row> = {
   id: string
   header: ReactNode
   cell: (row: Row) => ReactNode
   align?: 'left' | 'right'
   width?: string
+  filter?: ColumnFilter
 }
 
 export type TableSort = {
   columnId: string
   order: ItemSortOrder
+}
+
+export type TableFilter = {
+  columnId: string
+  value: string
 }
 
 export type TableProps<Row> = {
@@ -25,7 +35,9 @@ export type TableProps<Row> = {
   caption: ReactNode
   empty?: ReactNode
   sort?: TableSort
+  filters?: TableFilter[]
   onSort?: (sort: TableSort) => void
+  onFilter?: (filter: TableFilter) => void
 }
 
 const sortOptionValue = (columnId: string, order: ItemSortOrder): string => `${columnId}:${order}`
@@ -41,6 +53,65 @@ const sortFromOption = (value: string): TableSort | undefined => {
 
 const columnLabel = (header: ReactNode, id: string): string => (typeof header === 'string' ? header : id)
 
+const filterValue = (filters: TableFilter[], columnId: string): string =>
+  filters.find((filter) => filter.columnId === columnId)?.value ?? ''
+
+const FilterText = ({
+  columnId,
+  label,
+  value,
+  onFilter,
+}: {
+  columnId: string
+  label: string
+  value: string
+  onFilter: (filter: TableFilter) => void
+}) => (
+  <input
+    aria-label={label}
+    placeholder={label}
+    className={cx(controlClass, 'h-9 w-full px-3 sm:w-40')}
+    value={value}
+    onChange={(event) => onFilter({ columnId, value: event.target.value })}
+  />
+)
+
+const FilterSelect = ({
+  columnId,
+  label,
+  options,
+  value,
+  onFilter,
+}: {
+  columnId: string
+  label: string
+  options: ReadonlyArray<{ value: string; label: string }>
+  value: string
+  onFilter: (filter: TableFilter) => void
+}) => (
+  <div className="relative">
+    <select
+      aria-label={label}
+      className={cx(controlClass, 'h-9 w-full appearance-none py-0 pr-9 pl-3 sm:w-auto')}
+      value={value}
+      onChange={(event) => onFilter({ columnId, value: event.target.value })}
+    >
+      <option value="">{`Any ${label.toLowerCase()}`}</option>
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+    <Icon
+      size="sm"
+      className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 text-fg-muted"
+    >
+      <ChevronDownIcon />
+    </Icon>
+  </div>
+)
+
 const ariaSortFor = (columnId: string, sort: TableSort | undefined): 'ascending' | 'descending' | 'none' => {
   if (sort?.columnId !== columnId) return 'none'
   return sort.order === 'asc' ? 'ascending' : 'descending'
@@ -53,7 +124,9 @@ export const Table = <Row,>({
   caption,
   empty = 'No results',
   sort,
-  onSort = () => { }
+  filters = [],
+  onSort = () => { },
+  onFilter = () => { }
 }: TableProps<Row>) => {
   const captionId = useId()
   const sortId = useId()
@@ -64,39 +137,67 @@ export const Table = <Row,>({
 
   return (
     <div className="@container w-full min-w-0 max-w-full rounded-lg bg-surface @min-[48rem]:p-8">
-      <div className="sm:flex items-center justify-between gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 id={captionId} className="m-0 py-3 text-center sm:text-left text-heading @min-[48rem]:px-4">
           {caption}
         </h1>
-        <div className="relative">
-          <select
-            id={sortId}
-            aria-label="Sort"
-            className={cx(controlClass, 'h-9 w-auto appearance-none py-0 pr-9 pl-3')}
-            value={sort ? sortOptionValue(sort.columnId, sort.order) : ''}
-            onChange={(event) => {
-              const next = sortFromOption(event.target.value)
-              if (next) onSort(next)
-            }}
-          >
-            <option value="" disabled>
-              Sort
-            </option>
-            {columns.flatMap((column) => {
-              const label = columnLabel(column.header, column.id)
-              return ItemSortOrder.options.map((order) => (
-                <option key={sortOptionValue(column.id, order)} value={sortOptionValue(column.id, order)}>
-                  {`${label} ${order === 'asc' ? 'ascending' : 'descending'}`}
-                </option>
-              ))
-            })}
-          </select>
-          <Icon
-            size="sm"
-            className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 text-fg-muted"
-          >
-            <ChevronDownIcon />
-          </Icon>
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
+          {columns.map((column) => {
+            if (!column.filter) return null
+            const label = columnLabel(column.header, column.id)
+            const value = filterValue(filters, column.id)
+            if (column.filter.type === 'text') {
+              return (
+                <FilterText
+                  key={column.id}
+                  columnId={column.id}
+                  label={label}
+                  value={value}
+                  onFilter={onFilter}
+                />
+              )
+            }
+            return (
+              <FilterSelect
+                key={column.id}
+                columnId={column.id}
+                label={label}
+                options={column.filter.options}
+                value={value}
+                onFilter={onFilter}
+              />
+            )
+          })}
+          <div className="relative">
+            <select
+              id={sortId}
+              aria-label="Sort"
+              className={cx(controlClass, 'h-9 w-full appearance-none py-0 pr-9 pl-3 sm:w-auto')}
+              value={sort ? sortOptionValue(sort.columnId, sort.order) : ''}
+              onChange={(event) => {
+                const next = sortFromOption(event.target.value)
+                if (next) onSort(next)
+              }}
+            >
+              <option value="" disabled>
+                Sort
+              </option>
+              {columns.flatMap((column) => {
+                const label = columnLabel(column.header, column.id)
+                return ItemSortOrder.options.map((order) => (
+                  <option key={sortOptionValue(column.id, order)} value={sortOptionValue(column.id, order)}>
+                    {`${label} ${order === 'asc' ? 'ascending' : 'descending'}`}
+                  </option>
+                ))
+              })}
+            </select>
+            <Icon
+              size="sm"
+              className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 text-fg-muted"
+            >
+              <ChevronDownIcon />
+            </Icon>
+          </div>
         </div>
       </div>
       <p className="sr-only" aria-live="polite">

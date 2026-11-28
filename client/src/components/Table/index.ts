@@ -1,1 +1,1 @@
-export { Table, type Column, type TableProps, type TableSort } from './Table'
+export { Table, type Column, type ColumnFilter, type TableProps, type TableSort, type TableFilter } from './Table'
