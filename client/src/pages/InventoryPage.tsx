@@ -7,8 +7,9 @@ import { Icon, SpinnerIcon } from "@/components/Icon";
 import { formatCost } from "@server/shared/utils";
 
 const columns: Array<Column<Item>> = [
-  { id: "name", header: "Name", cell: (item) => item.name },
-  { id: "sku", header: "SKU", width: "18%", cell: (item) => item.sku },
+  { id: "name", header: "Name", width: "20rem", cell: (item) => item.name },
+  { id: "acquisition_id", header: "Acquisition ID", width: "10rem", cell: (item) => item.acquisition_id },
+  { id: "sku", header: "SKU", width: "20rem", cell: (item) => item.sku },
   { id: "allocated_cost", header: "Cost", align: "right", width: "8.5rem", cell: (item) => formatCost(item.allocated_cost) },
   { id: "condition", header: "Condition", width: "10rem", cell: (item) => ItemConditionLabel[item.condition] },
   { id: "status", header: "Status", width: "11rem", cell: (item) => ItemStatusLabel[item.status] },
